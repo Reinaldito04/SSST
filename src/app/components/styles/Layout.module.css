@@ -1,0 +1,14 @@
+/* styles/Layout.module.css */
+
+.layout {
+    display: flex;
+    flex-direction: row; /* Disposición en fila */
+    height: 100vh; /* Altura completa de la ventana */
+  }
+  .content {
+    transition: margin-left 0.3s ease; /* Añadir una transición suave al margen */
+  }
+  
+  .contentShifted {
+    margin-left: -250px; /* Cambia esto al ancho de tu sidebar cuando esté cerrado */
+  }

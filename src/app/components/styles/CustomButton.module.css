@@ -1,0 +1,13 @@
+.customButton {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .customButton:hover {
+    opacity: 0.8; /* Cambia la opacidad al pasar el mouse */
+  }
+  

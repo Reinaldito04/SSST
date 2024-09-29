@@ -1,0 +1,159 @@
+/* Tabla.module.css */
+.tableContainer {
+    margin: 20px;
+    overflow-x: auto;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    border: 1px solid #000000;
+    background-color: #EEEEEE;
+}
+
+.table th {
+    background-color: #44547D;
+    color: white;
+    padding: 12px;
+}
+
+.table td {
+    padding: 12px;
+    border: 1px solid #ddd;
+}
+.table th, 
+.table td {
+    border: none; /* Elimina el borde de las celdas */
+    padding: 8px; /* Espaciado interno para mejor apariencia */
+    text-align: left; /* Alineación del texto (puedes cambiarlo según tus necesidades) */
+}
+.modifyButton {
+    background-color: #6c757d;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.modifyButton:hover {
+    background-color: #5a6268;
+}
+
+.submenu {
+    background-color: #FAF7F7;
+    height: 0; /* Comienza en 0 para ocultar el submenú */
+    overflow: hidden; /* Oculta el contenido que desborda */
+    transition: height 1.8s ease; /* Transición suave del height */
+    border: 1px solid #ddd;
+}
+
+.submenu.active {
+    height: 100px; /* Cambia este valor a la altura deseada cuando está activo */
+}
+
+.submenuOptions {
+    display: flex;
+    transition: height 0.8s;
+
+    gap: 10px;
+}
+.botonEliminar{
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    color: #FF0000;
+    background-color: transparent;
+    
+}
+
+.submenuButton {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.submenuButton:hover {
+    background-color: #0056b3;
+}
+
+.pagination {
+    margin-top: 10px;
+    display: flex;
+    justify-content: center;
+}
+
+.pagination button {
+    background-color: #f8f9fa;
+    border: 1px solid #716E6E;
+    padding: 8px 12px;
+    margin: 0;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.pagination button:hover {
+    background-color: #e2e6ea;
+}
+
+.activePage {
+    background-color: purple;
+    color: white;
+}
+.pagination {
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.currentPage {
+    background-color: #EE3333 !important;
+    color: white;
+    padding: 5px 10px;
+    margin: 0 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+
+    font-weight: bold;
+}
+.recordCount {
+    margin-top: 10px;
+    font-size: 14px;
+    color: #555;
+}
+.tableButton {
+    text-align: center;
+    margin: 0 auto;
+    background-color: red; /* Fondo transparente para que resalte el color del texto */
+    color: white; /* Color del texto */
+    padding: 8px 12px; /* Espaciado interno del botón */
+    border: none; /* Sin borde */
+    border-radius: 8px; /* Esquinas redondeadas */
+    cursor: pointer; /* Cursor tipo puntero al pasar sobre el botón */
+    font-weight: bold; /* Texto en negrita */
+    display: flex;
+    transition: background-color 0.3s, transform 0.2s; /* Efecto de transición para cambios */
+}
+
+.tableButton:hover {
+    background-color: rgba(255, 255, 255, 0.2); /* Fondo ligeramente blanco al pasar el mouse */
+    transform: scale(1.05); /* Aumentar un poco el tamaño al pasar el mouse */
+}
+.searchInput {
+    width: 25%;
+    padding: 10px;
+    font-size: 16px;
+    margin-bottom: 20px; /* Espacio debajo del input */
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    margin-left: 75%;
+  }
+  

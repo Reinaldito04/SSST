@@ -1,0 +1,19 @@
+.carpert {
+    background-color: red;
+    height: 350px;
+    border-radius: 25px;
+    width: 400px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
+  

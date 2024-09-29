@@ -1,0 +1,47 @@
+.header {
+    width: 100%;
+    height: 80px;
+    background-color: #f8f9fa; /* Color de fondo gris claro */
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* Espacio entre elementos */
+    padding: 0 20px; /* Espacio lateral */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Sombra más sutil */
+  }
+  
+  .leftSection {
+    display: flex; /* Usar flexbox para alinear el icono y el logo */
+    align-items: center; /* Alinear verticalmente */
+  }
+  
+  .menuIcon {
+    cursor: pointer; /* Cambia el cursor al pasar sobre el icono */
+    margin-right: 15px; /* Espacio entre el icono de menú y el logo */
+  }
+  
+  .logo {
+    display: flex;
+    align-items: center; /* Centrar verticalmente el logo */
+  }
+  
+  .userSection {
+    display: flex;
+    align-items: center; /* Centrar verticalmente el texto y el icono */
+  }
+  
+  .userName {
+    font-weight: bold;
+    font-size: 18px; /* Tamaño de fuente un poco más pequeño */
+    color: #343a40; /* Color del texto */
+    margin-right: 10px; /* Espacio entre el texto y el icono */
+  }
+  
+  .userIcon {
+    color: black; /* Color del icono de usuario */
+  }
+  .iconArrow{
+    margin-left: 10px;
+    margin-right: 10px;
+    
+  }
+  

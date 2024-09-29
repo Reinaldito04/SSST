@@ -1,0 +1,40 @@
+.buttonLogin{
+    background-color: #E33333;
+    color: white;
+    font-weight: bold;
+    padding: 25px;
+    border-radius: 15px;
+}
+.labelLogin{
+    color: #E33333;
+    margin-left:10px;
+    font-weight: bold;
+}
+.body{
+    background: linear-gradient(to bottom, #a3a2a2, #3b3b3b);
+}
+.title{
+    text-wrap: balance;
+    
+    font-size: 35px;
+    font-weight: bold;
+    font-style: normal;
+    width: 60%;
+    margin: 0 auto;
+}
+.loginSection{
+    background-color: white;
+    height: 100dvh;
+    border-top-left-radius: 25px;
+    border-bottom-left-radius: 25px;
+}
+.registerlabel{
+    color: #E33333;
+    font-weight: bold;
+}
+.logoContainer {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    z-index: 10;
+  }
