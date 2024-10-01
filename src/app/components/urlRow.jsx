@@ -10,7 +10,6 @@ function UrlRow({ breadcrumbs }) {
             <ol
               className=""
               style={{
-                backgroundColor: '#f8f9fa',
                 padding: '0px 15px', // Reducir padding
                 borderRadius: '5px',
                 margin: '0px 10px',

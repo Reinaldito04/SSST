@@ -1,0 +1,12 @@
+.contenedorPage {
+    background-color: #f8f9fa;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    margin-top: 20px;
+    position: relative;
+    padding: 0px;
+    padding-top: 100px; /* Aumenta el padding para dar espacio al texto */
+    padding-bottom: 20px;
+  }
+  
+ 

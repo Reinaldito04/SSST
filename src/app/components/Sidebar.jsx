@@ -220,7 +220,7 @@ function Sidebar({ isOpen }) {
               </Link>
             </li>
             <li className="nav-item mb-2">
-              <Link href="/subpage12" className="nav-link text-black">
+              <Link href="/dashboard/desviaciones/consultar" className="nav-link text-black">
                 Consultar Desviaciones
               </Link>
             </li>

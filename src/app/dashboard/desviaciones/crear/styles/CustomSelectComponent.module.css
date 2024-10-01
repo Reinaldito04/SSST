@@ -1,0 +1,66 @@
+.selectWrapper {
+    position: relative;
+    width: 100%;
+    display: flex;
+  }
+  
+  .selectLabel {
+    background-color: #e0e0e0;
+    padding: 10px;
+    border-radius: 4px 0 0 4px;
+    white-space: nowrap;
+    display: inline-block;
+  }
+  
+  .customSelect {
+    position: relative;
+    background-color: white;
+    border: 1px solid #ccc;
+    padding: 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 100%;
+  }
+  
+  .selectedValue {
+    color: #333;
+  }
+  
+  .optionsList {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background-color: white;
+    border: 1px solid #ccc;
+    z-index: 10;
+    border-radius: 4px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .optionItem {
+    padding: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .optionItem:hover {
+    background-color: #f1f1f1;
+  }
+  
+  /* Colores para los distintos niveles */
+  .bajo {
+    background-color: #d1e7dd;
+    color: #0f5132;
+  }
+  
+  .medio {
+    background-color: #fff3cd;
+    color: #664d03;
+  }
+  
+  .alto {
+    background-color: #f8d7da;
+    color: #842029;
+  }
+  

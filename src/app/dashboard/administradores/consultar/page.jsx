@@ -1,9 +1,9 @@
 import LayoutSidebar from '@/app/components/layoutSidebar';
 import UrlRow from '@/app/components/urlRow';
-import styles from './styles/consultarPage.module.css';
 import { RiCheckboxIndeterminateFill } from "react-icons/ri"; 
 import clsx from 'clsx';
 import Tabla from './components/tableConsult';
+import styles from './styles/consultarPage.module.css';
 function Page() {
     const breadcrumbs = [
         { label: "Inicio", link: "/dashboard" },
