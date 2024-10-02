@@ -16,8 +16,19 @@
     color: black;
     text-decoration: none;
     padding: 10px;
+    display: block;
+    transition: background-color 0.3s;
+    list-style: none;
   }
-  
+  .navLink li{
+    list-style: none;
+    text-decoration: none;
+    display: block;
+    transition: background-color 0.3s;
+    list-style: none;
+
+    
+  }
   .nav-link:hover {
     background-color: #495057; /* Color de fondo al pasar el mouse */
   }

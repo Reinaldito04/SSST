@@ -182,7 +182,7 @@ function Sidebar({ isOpen }) {
           </div>
           <ul className={clsx(styles.submenu, { [styles.open]: isOpenMenu5 })}>
             <li className="nav-item mb-2">
-              <Link href="/subpage9" className="nav-link text-black">
+              <Link href="/dashboard/contratistas/registrar" className="nav-link text-black">
                 Registrar Contratista
               </Link>
             </li>
@@ -215,7 +215,7 @@ function Sidebar({ isOpen }) {
           </div>
           <ul className={clsx(styles.submenu, { [styles.open]: isOpenMenu6 })}>
             <li className="nav-item mb-2">
-              <Link href="/subpage11" className="nav-link text-black">
+              <Link href="/dashboard/desviaciones/crear" className="nav-link text-black">
                 Registrar Desviaciones
               </Link>
             </li>
