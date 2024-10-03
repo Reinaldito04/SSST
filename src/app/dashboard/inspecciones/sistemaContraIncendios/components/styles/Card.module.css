@@ -1,0 +1,21 @@
+.line {
+    width: 5px; /* Ancho de la línea */
+    height: 100px; /* Altura de la línea ocupa el 100% del contenedor */
+}
+
+.card {
+    border: 1px solid #e0e0e0; /* Borde ligero */
+    border-radius: 8px; /* Esquinas redondeadas */
+    margin: 0px;
+    padding: 0px;
+    background-color: white; /* Fondo blanco */
+    min-height: 100px; /* Altura mínima para que la línea tenga referencia */
+}
+
+.cardtitle {
+    font-weight: bold; /* Título en negrita */
+}
+
+.cardsubtitle {
+    font-size: 0.9rem; /* Tamaño del subtítulo */
+}

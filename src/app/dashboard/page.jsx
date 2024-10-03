@@ -5,7 +5,8 @@ import CardDashboard from "./components/CardDarshboard";
 function Page() {
   return (
     <Layout>
-      <div className="container-fluid">
+      <div className="container-fluid container scrollable-section"
+      >
         <div className="row mx-auto">
           <div className="col-md-4 mb-4">
             <CardDashboard />
@@ -24,6 +25,7 @@ function Page() {
                 boxShadow:
                   "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)",
                 backgroundColor: "#f8f9fa",
+                    overflow:"hidden"
               }}
             >
                 <div className="card-body ">
@@ -43,6 +45,7 @@ function Page() {
                 boxShadow:
                   "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)",
                 backgroundColor: "#f8f9fa",
+                overflow:"hidden"
               }}
             >
                 <div className="card-body ">

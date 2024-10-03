@@ -12,9 +12,25 @@ body {
   padding: 0;
   margin: 0;
 }
-
+body{
+  overflow-y: hidden;
+}
 a {
   color: inherit;
   text-decoration: none;
 }
 
+/* Sección específica con scroll */
+.scrollable-section {
+  padding-bottom: 150px;
+  max-height:100dvb;  /* Ajusta la altura máxima de la sección */
+  overflow-y: auto;   /* Permite scroll solo en esta sección */
+
+  padding-right: 1rem; /* Evitar que el contenido corte el scroll */
+}
+.scrollable-sectionNavbar{
+  max-height: 100dvb;  /* Ajusta la altura máxima de la sección */
+  overflow-y: auto;   /* Permite scroll solo en esta sección */
+  padding-right: 150px; /* Evitar que el contenido corte el scroll */
+
+}

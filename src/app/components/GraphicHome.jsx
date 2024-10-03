@@ -33,7 +33,7 @@ const GraphicHome = ({ urlEndpoint }) => {
     };
 
     fetchGraphData(); // Llama a la función
-  }, []);
+  }, [urlEndpoint]);
 
   if (loading) {
     return <div>Cargando gráfico...</div>; // Mensaje de carga
@@ -41,9 +41,12 @@ const GraphicHome = ({ urlEndpoint }) => {
 
   return (
     <Plot
+    
+      config={{ responsive: true }}
+      
       data={data}
       layout={layout}
-      style={{ width: "100%", height: "100%" }}
+      style={{ width: "auto", height: "auto" }}
     />
   );
 };

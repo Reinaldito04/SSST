@@ -59,8 +59,8 @@ function Sidebar({ isOpen }) {
   const toggleMenu6 = () => setIsOpenMenu6(!isOpenMenu6);
 
   return (
-    <div className={clsx(styles.sidebar, { [styles.open]: isOpen })}>
-      <ul className="nav flex-column">
+    <div className={clsx(styles.sidebar,'scrollable-sectionNavbar', { [styles.open]: isOpen })}>
+      <ul className={clsx(styles.sidebarMenu,"nav flex-column")}>
         <li className={clsx(styles.navLink, "nav-item")}>
           <div
             className="nav-link text-black d-flex justify-content-between align-items-center"
@@ -142,7 +142,7 @@ function Sidebar({ isOpen }) {
               </Link>
             </li>
             <li className="nav-item mb-2">
-              <Link href="/subpage6" className="nav-link text-black">
+              <Link href="/dashboard/inspecciones/sistemaContraIncendios" className="nav-link text-black">
               Sistemas contra Incendio
               </Link>
             </li>

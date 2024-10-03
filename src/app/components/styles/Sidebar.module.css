@@ -1,53 +1,58 @@
 .sidebar {
-    background-color: #737373; /* Color de fondo */
-    min-height: 100vh; /* Para que ocupe toda la altura de la pantalla */
-    width: 250px; /* Ajusta el ancho según tu diseño */
-    color: white; /* Color del texto */
-    transition: transform 0.3s ease; /* Transición suave para el sidebar */
-    transform: translateX(-100%); /* Ocultar por defecto */
-  }
-  
-  .sidebar.open {
-    transform: translateX(0); /* Mostrar el sidebar cuando está abierto */
-  }
-  
-  .navLink {
-    background-color: #D3D3C0;
-    color: black;
-    text-decoration: none;
-    padding: 10px;
-    display: block;
-    transition: background-color 0.3s;
-    list-style: none;
-  }
-  .navLink li{
-    list-style: none;
-    text-decoration: none;
-    display: block;
-    transition: background-color 0.3s;
-    list-style: none;
+  background-color: #c9cacb;
+  min-height: 100vh; /* Para que ocupe toda la altura de la pantalla */
+  width: 200px; /* Ajusta el ancho según tu diseño */
+  color: white; /* Color del texto */
+  transition: transform 0.3s ease; /* Transición suave para el sidebar */
+  transform: translateX(-100%); /* Ocultar por defecto */
+  position: relative;
+  z-index: 1;
+}
 
-    
-  }
-  .nav-link:hover {
-    background-color: #495057; /* Color de fondo al pasar el mouse */
-  }
-  
-  .nav-item {
-    margin-bottom: 10px; /* Margen entre elementos del menú */
-  }
-  
-  .submenu {
-    overflow: hidden; /* Para ocultar el contenido extra */
-    max-height: 0; /* Inicialmente cerrado */
-    transition: max-height 0.3s ease-in-out; /* Transición suave para la apertura */
-  }
-  
-  .submenu.open {
-    max-height: 500px; /* Cambia este valor según el contenido */
-  }
-  
-  .submenu .nav-link {
-    padding-left: 20px; /* Desplaza los submenús hacia la derecha */
-  }
-  
+.sidebar.open {
+  transform: translateX(0); /* Mostrar el sidebar cuando está abierto */
+}
+.sidebarMenu {
+  list-style: none;
+  text-decoration: none;
+  width: 100%;
+  padding-right: 10px;
+}
+
+.navLink {
+  background-color: #d3d3c0;
+  color: black;
+  text-decoration: none;
+  padding: 10px;
+  display: block;
+  transition: background-color 0.3s;
+  list-style: none;
+}
+.navLink li {
+  list-style: none;
+  text-decoration: none;
+  display: block;
+  transition: background-color 0.3s;
+  list-style: none;
+}
+.nav-link:hover {
+  background-color: #495057; /* Color de fondo al pasar el mouse */
+}
+
+.nav-item {
+  margin-bottom: 10px; /* Margen entre elementos del menú */
+}
+
+.submenu {
+  overflow: hidden; /* Para ocultar el contenido extra */
+  max-height: 0; /* Inicialmente cerrado */
+  transition: max-height 0.3s ease-in-out; /* Transición suave para la apertura */
+}
+
+.submenu.open {
+  max-height: 500px; /* Cambia este valor según el contenido */
+}
+
+.submenu .nav-link {
+  padding-left: 20px; /* Desplaza los submenús hacia la derecha */
+}

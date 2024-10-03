@@ -13,11 +13,20 @@ function Page() {
 
     return (
         <LayoutSidebar>
-            {/* Breadcrumbs */}
+           
+            <div className="scrollable-section">
+            <div className="container-fluid"
+            style={{
+                marginLeft:'20px'
+            }}>
             <UrlRow breadcrumbs={breadcrumbs}  />
+
+            </div>
             <div className="container-fluid mt-4">
                 <div className={clsx(styles.headerContainer)}>
-                    <RiCheckboxIndeterminateFill size={40} className={styles.headerIcon} />
+                    <RiCheckboxIndeterminateFill size={40}   style={{
+                marginLeft:'20px'
+            }} className={styles.headerIcon} />
                     <h2 className={styles.title}>Gestionar Usuarios Administradores</h2>
                 </div>
                 <div className={clsx(styles.contenedorPage, 'container-fluid')}>
@@ -30,6 +39,9 @@ function Page() {
                     <Tabla />  
                 </div>
             </div>
+            </div>
+            {/* Breadcrumbs */}
+           
         </LayoutSidebar>
     );
 }
