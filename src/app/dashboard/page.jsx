@@ -5,7 +5,7 @@ import CardDashboard from "./components/CardDarshboard";
 function Page() {
   return (
     <Layout>
-      <div className="container-fluid container scrollable-section"
+      <div className="container-fluid container "
       >
         <div className="row mx-auto">
           <div className="col-md-4 mb-4">

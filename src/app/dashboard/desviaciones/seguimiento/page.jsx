@@ -13,9 +13,30 @@ function page() {
   ];
   return (
     <LayoutSidebar>
-      <UrlRow breadcrumbs={breadcrumbs} />
+      <div
+        className="contenedorURL"
+        style={{
+          marginLeft: "20px",
+          position: "relative",
+          width: "100%",
+        }}
+      >
+        <div
+          className="contenedorurl"
+          style={{
+            marginLeft: "20px",
+          }}
+        >
+          <UrlRow
+            breadcrumbs={breadcrumbs}
+            styles={{
+              marginLeft: "20px",
+            }}
+          />
+        </div>
+      </div>
 
-      <div className="container-fluid mt-4">
+      <div className="container mt-4">
         <div className="row  align-items-center">
           <div
             className="col-md-12 col-12

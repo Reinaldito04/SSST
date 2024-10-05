@@ -1,14 +1,30 @@
-/* styles/Layout.module.css */
-
 .layout {
-    display: flex;
-    flex-direction: row; /* Disposición en fila */
-    height: 100vh; /* Altura completa de la ventana */
-  }
-  .content {
-    transition: margin-left 0.3s ease; /* Añadir una transición suave al margen */
-  }
-  
-  .contentShifted {
-    margin-left: -250px; /* Cambia esto al ancho de tu sidebar cuando esté cerrado */
-  }
+  display: flex;
+  flex-direction: row;
+  height: 100vh; /* Altura completa del viewport */
+  position: relative; /* Permite que el footer se posicione en relación a este contenedor */
+}
+
+.content {
+  transition: margin-left 0.3s ease;
+  flex-grow: 1; /* Para que el contenido ocupe todo el espacio disponible */
+}
+
+.contentShifted {
+  margin-left: -250px; /* Ajusta al ancho del sidebar cerrado */
+}
+
+.footer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%; /* Ocupa todo el ancho */
+  background-color: #f8f9fa; /* Fondo claro */
+  color: #000000;
+  font-weight: 500;
+  padding: 1rem 0; /* Espaciado alrededor del texto */
+  transition: padding-left 0.3s ease;
+}
+.footer.open {
+  padding-left: 250px; /* Ajusta esto según el ancho de tu sidebar */
+}

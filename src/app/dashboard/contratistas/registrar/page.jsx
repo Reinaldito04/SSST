@@ -15,7 +15,13 @@ function Page() {
   return (
     <LayoutSidebar>
       {/* Breadcrumbs */}
+      <div className="container-fluid"
+      style={{
+        marginLeft:'30px'
+      }}>
       <UrlRow breadcrumbs={breadcrumbs} />
+
+      </div>
 
       {/* Contenido Principal */}
       <div className="container-fluid mt-4">
@@ -27,13 +33,13 @@ function Page() {
             <CiCirclePlus size={40} className="text-black  "
             style={
               {
-                marginLeft:'10px'
+                marginLeft:'50px'
               }
             }  />
             <h2 className="mb-0">Registrar Nueva Contratista</h2>
           </div>
         </div>
-        <div className={clsx(styles.contenedorRegistrar,'container-fluid')}
+        <div className={clsx(styles.contenedorRegistrar,'container')}
         style={
           {
             width:'98%',

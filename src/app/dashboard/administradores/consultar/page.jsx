@@ -14,7 +14,7 @@ function Page() {
     return (
         <LayoutSidebar>
            
-            <div className="scrollable-section">
+            <div className="container-fluid">
             <div className="container-fluid"
             style={{
                 marginLeft:'20px'
@@ -29,7 +29,7 @@ function Page() {
             }} className={styles.headerIcon} />
                     <h2 className={styles.title}>Gestionar Usuarios Administradores</h2>
                 </div>
-                <div className={clsx(styles.contenedorPage, 'container-fluid')}>
+                <div className={clsx(styles.contenedorPage, 'container')}>
                     <h2 className={clsx(styles.listadoTitle)}>Listado Completo de Registros</h2>
                     <p className={clsx('text-muted',styles.description)}>
                         Estimado usuario(a), en esta sección usted podrá ver el listado simple de registros guardados en la base de datos; además de gestionar dichos registros como lo son las opciones de <span style={{
