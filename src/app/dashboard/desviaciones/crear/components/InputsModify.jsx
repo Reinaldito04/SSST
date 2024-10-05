@@ -1,14 +1,38 @@
 import React from "react";
 import styles from "../styles/inputComponent.module.css";
+import clsx from "clsx";
 
-const InputComponent = ({ label, value, onChange, placeholder, type = "text", options = [] }) => {
+const InputComponent = ({
+  label,
+  value,
+  onChange,
+  placeholder,
+  type = "text",
+  options = [],
+  styled = false,
+  style = {},
+}) => {
   return (
-    <div className={styles.inputWrapper}>
-      <div className={styles.inputLabel}>
-        {label}
-      </div>
+    <div
+      className={clsx(
+        styled ? styles.inputColumn : styles.inputWrapper,
+        "col",
+      )}
+    >
+      {styled ? (
+        <label className={clsx(styles.inputLabel, styles.inputLabelColumn)}
+        style={style}>
+          {label}
+        </label>
+      ) : (
+        <div className={styles.inputLabel}>{label}</div>
+      )}
       {type === "select" ? (
-        <select value={value} onChange={onChange} className={styles.inputField}>
+        <select
+          value={value}
+          onChange={onChange}
+          className={clsx(styled ? styles.inputFieldStyled : styles.inputField)}
+        >
           <option value="" disabled>
             {placeholder}
           </option>
@@ -24,7 +48,8 @@ const InputComponent = ({ label, value, onChange, placeholder, type = "text", op
           value={value}
           onChange={onChange}
           placeholder={placeholder}
-          className={styles.inputField}
+          style={style}
+          className={clsx(styled ? styles.inputFieldStyled : styles.inputField)}
         />
       )}
     </div>

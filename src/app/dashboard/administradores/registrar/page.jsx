@@ -14,12 +14,12 @@ function Page() {
 
   return (
     <LayoutSidebar>
-      <div className=" container-fluid"
-      style={
-        {
-          marginLeft:'20px'
-        }
-      }>
+      <div
+        className=" container-fluid"
+        style={{
+          marginLeft: "20px",
+        }}
+      >
         <UrlRow breadcrumbs={breadcrumbs} />
 
         {/* Contenido Principal */}
@@ -29,15 +29,20 @@ function Page() {
               className="col-md-12 col-12
      d-flex align-items-center "
             >
-              <CiCirclePlus size={40} className="text-black me-2" 
-              style={{
-                marginLeft:'10px'
-              }}/>
+              <CiCirclePlus
+                size={40}
+                className="text-black me-2"
+                style={{
+                  marginLeft: "10px",
+                }}
+              />
               <h2 className="mb-0">Registrar Usuarios Administradores</h2>
             </div>
           </div>
-          <div className={clsx(styles.contenedorRegistrar, "container-fluid")}
-          style={{marginLeft:'10px'}}>
+          <div
+            className={clsx(styles.contenedorRegistrar, "container-fluid")}
+            style={{ marginLeft: "10px" }}
+          >
             <div className="container-fluid">
               <AlertMessage />
               <Form />

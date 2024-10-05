@@ -25,11 +25,12 @@ function Page() {
 
   return (
     <LayoutSidebar>
-      <div className="scrollable-section container-fluid" style={{ marginLeft: '20px' }}>
+      <div className=" container-fluid" style={{ marginLeft: '20px' }}>
         <UrlRow breadcrumbs={breadcrumbs} />
         
         {/* Contenido Principal - Tarjetas Superiores */}
         <div className="container-fluid mt-4">
+          <div className="container-fluid">
           <div className="row">
             {cardDataTop.map((card, index) => (
               <div className="col-md-4 mb-4" key={index}>
@@ -37,6 +38,8 @@ function Page() {
               </div>
             ))}
           </div>
+          </div>
+         
         </div>
         
         {/* Contenedor de Línea */}
@@ -54,7 +57,7 @@ function Page() {
 
         {/* Contenido Principal - Tarjetas Inferiores */}
         <div className="container-fluid mt-4">
-          <div className="">
+          <div className="container-fluid">
             {cardDataBottom.map((card, index) => (
               <div className="col-md-4 mb-4" key={index}>
                 <CardIncendio title={card.title} subtitle={card.subtitle}  colorLine={card.colorLine} colorText={card.colorText} />

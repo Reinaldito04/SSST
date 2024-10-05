@@ -197,7 +197,7 @@ function Sidebar({ isOpen }) {
               </Link>
             </li>
             <li className="nav-item mb-2">
-              <Link href="/subpage10" className="nav-link text-black">
+              <Link href="/dashboard/contratistas/control&seguimiento" className="nav-link text-black">
                 Control y Seguimiento
               </Link>
             </li>
