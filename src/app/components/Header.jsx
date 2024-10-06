@@ -6,6 +6,9 @@ import Image from "next/image";
 import { IoIosArrowDown } from "react-icons/io";
 
 function Header({ toggleSidebar }) {
+  // Obtener el nombre de usuario del localStorage
+  const username = localStorage.getItem("username") || "Usuario";
+
   return (
     <header className={styles.header}>
       <div className={styles.leftSection}>
@@ -19,7 +22,7 @@ function Header({ toggleSidebar }) {
 
       <div className={styles.userSection}>
         <IoIosArrowDown size={20} className={styles.iconArrow} />
-        <div className={styles.userName}>Reinaldo Bellorin</div>
+        <div className={styles.userName}>{username}</div> {/* Mostrar nombre de usuario */}
         <FaUserCircle size={30} className={styles.userIcon} />
       </div>
     </header>

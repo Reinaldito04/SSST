@@ -2,10 +2,9 @@ import LayoutSidebar from "@/app/components/layoutSidebar";
 import UrlRow from "@/app/components/urlRow";
 import styles from "@/app/dashboard/administradores/registrar/styles/registrarPage.module.css";
 import clsx from "clsx";
-import FormControl from "./components/FormControl";
 import { IoArrowBackSharp } from "react-icons/io5";
 import Link from "next/link";
-
+import Tabla from "./components/TablaSeguimiento";
 function page() {
   const breadcrumbs = [
     { label: "Inicio", link: "/dashboard" },
@@ -49,12 +48,36 @@ function page() {
                 </div>
 
                 <div class="flex-grow-1 text-center">
-                  <h5 class="mb-0">Control de Contratistas</h5>
+                  <h5 class="mb-0">Seguimiento de Contratistas</h5>
                 </div>
               </div>
 
               <div className="container mt-4 pb-4">
-                <FormControl />
+                <div className="container-fluid">
+                <p
+                  className="fs-5 text-muted"
+                  style={{
+                    textWrap:'balance',
+                    whiteSpace:'pre-wrap',
+                    textAlign:'center'
+
+                  }}
+                >
+                  Estimado usuario(a), en esta sección usted podrá ver el
+                  listado simple de registros guardados en la base de datos;
+                  además de gestionar dichos registros como lo son las opciones
+                  de <span style={
+                    {
+                      fontWeight:'bold',
+                      color:'#FF0000'
+                    }
+                  }>  ( Modificar y Eliminar Registros )</span>
+                </p>
+                </div>
+               
+                <div className="container-fluid">
+                  <Tabla />
+                </div>
               </div>
             </div>
           </div>

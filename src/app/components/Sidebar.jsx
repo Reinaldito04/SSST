@@ -59,8 +59,12 @@ function Sidebar({ isOpen }) {
   const toggleMenu6 = () => setIsOpenMenu6(!isOpenMenu6);
 
   return (
-    <div className={clsx(styles.sidebar,'scrollable-sectionNavbar', { [styles.open]: isOpen })}>
-      <ul className={clsx(styles.sidebarMenu,"nav flex-column")}>
+    <div
+      className={clsx(styles.sidebar, "scrollable-sectionNavbar", {
+        [styles.open]: isOpen,
+      })}
+    >
+      <ul className={clsx(styles.sidebarMenu, "nav flex-column")}>
         <li className={clsx(styles.navLink, "nav-item")}>
           <div
             className="nav-link text-black d-flex justify-content-between align-items-center"
@@ -142,13 +146,17 @@ function Sidebar({ isOpen }) {
               </Link>
             </li>
             <li className="nav-item mb-2">
-              <Link href="/dashboard/inspecciones/sistemaContraIncendios" className="nav-link text-black">
-              Sistemas contra Incendio
+              <Link
+                href="/dashboard/inspecciones/sistemaContraIncendios"
+                className="nav-link text-black"
+              >
+                Sistemas contra Incendio
               </Link>
             </li>
             <li className="nav-item mb-2">
               <Link href="/subpage6" className="nav-link text-black">
-              Higiene ocupacional              </Link>
+                Higiene ocupacional{" "}
+              </Link>
             </li>
           </ul>
         </li>
@@ -182,12 +190,19 @@ function Sidebar({ isOpen }) {
           </div>
           <ul className={clsx(styles.submenu, { [styles.open]: isOpenMenu5 })}>
             <li className="nav-item mb-2">
-              <Link href="/dashboard/contratistas/registrar" className="nav-link text-black">
+              <Link
+                href="/dashboard/contratistas/registrar"
+                className="nav-link text-black"
+              >
                 Registrar Contratista
               </Link>
             </li>
             <li className="nav-item mb-2">
-              <Link href="/subpage10" className="nav-link text-black">
+              <Link
+                href="
+              /dashboard/contratistas/gestionar"
+                className="nav-link text-black"
+              >
                 Gestionar Contratista
               </Link>
             </li>
@@ -197,7 +212,10 @@ function Sidebar({ isOpen }) {
               </Link>
             </li>
             <li className="nav-item mb-2">
-              <Link href="/dashboard/contratistas/control&seguimiento" className="nav-link text-black">
+              <Link
+                href="/dashboard/contratistas/control&seguimiento"
+                className="nav-link text-black"
+              >
                 Control y Seguimiento
               </Link>
             </li>
@@ -215,12 +233,18 @@ function Sidebar({ isOpen }) {
           </div>
           <ul className={clsx(styles.submenu, { [styles.open]: isOpenMenu6 })}>
             <li className="nav-item mb-2">
-              <Link href="/dashboard/desviaciones/crear" className="nav-link text-black">
+              <Link
+                href="/dashboard/desviaciones/crear"
+                className="nav-link text-black"
+              >
                 Registrar Desviaciones
               </Link>
             </li>
             <li className="nav-item mb-2">
-              <Link href="/dashboard/desviaciones/consultar" className="nav-link text-black">
+              <Link
+                href="/dashboard/desviaciones/consultar"
+                className="nav-link text-black"
+              >
                 Consultar Desviaciones
               </Link>
             </li>

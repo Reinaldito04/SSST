@@ -27,7 +27,7 @@ function Page() {
           <div className="row  align-items-center">
             <div
               className="col-md-12 col-12
-     d-flex align-items-center "
+             d-flex align-items-center "
             >
               <CiCirclePlus
                 size={40}
