@@ -1,3 +1,4 @@
+'use client'
 import React from "react";
 import styles from "../styles/inputComponent.module.css";
 import clsx from "clsx";
@@ -11,6 +12,7 @@ const InputComponent = ({
   options = [],
   styled = false,
   style = {},
+  readOnly = false
 }) => {
   return (
     <div
@@ -49,6 +51,7 @@ const InputComponent = ({
           onChange={onChange}
           placeholder={placeholder}
           style={style}
+          readOnly={readOnly}
           className={clsx(styled ? styles.inputFieldStyled : styles.inputField)}
         />
       )}

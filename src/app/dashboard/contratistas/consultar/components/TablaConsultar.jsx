@@ -1,39 +1,32 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styles from "@/app/dashboard/administradores/consultar/styles/Tabla.module.css";
-import CustomButton from "@/app/components/CustomBotton";
+import { axioInstance } from "@/app/utils/axioInstance";
+
 function Tabla() {
   const [activeRow, setActiveRow] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
+  const [data, setData] = useState([]); // Estado para almacenar los datos de la API
   const itemsPerPage = 5; // Cambia este valor según cuántos elementos quieras por página
 
-  const data = [
-    {
-      codigo: 1,
-      RIF: "J-123456789",
-      Nombre: "Invermaur, C.A.",
-      GerenciaContratante: "SSGG",
-      NContrato: "12345678",
-      InicioContrato: "19-06-2024",
-      FinalizaciónContrato: "19-07-2024",
-    },
-    {
-      codigo: 2,
-      RIF: "J-123456789",
-      Nombre: "MMGROUP",
-      GerenciaContratante: "SSGG",
-      NContrato: "12345678",
-      InicioContrato: "19-06-2024",
-      FinalizaciónContrato: "19-07-2024",
-    },
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axioInstance.get("/contratistas/consultContratist");
+        setData(response.data); // Usa response.data directamente
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        alert("Error fetching data: " + error.message); // Alertar en caso de error
+      }
+    };
 
-    // Agrega más filas aquí si lo deseas
-  ];
+    fetchData();
+  }, []); // Se ejecuta una vez al montar el componente
 
   const filteredData = data.filter((row) =>
-    row.Nombre.toLowerCase().includes(searchTerm.toLowerCase())
+    row.NombreContr.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const totalRecords = filteredData.length;
@@ -69,17 +62,15 @@ function Tabla() {
         </thead>
         <tbody>
           {currentData.map((row, index) => (
-            <React.Fragment key={index}>
-              <tr>
-                <td>{row.codigo}</td>
-                <td>{row.RIF}</td>
-                <td>{row.Nombre}</td>
-                <td>{row.GerenciaContratante}</td>
-                <td>{row.NContrato}</td>
-                <td>{row.InicioContrato} </td>
-                <td> {row.FinalizaciónContrato} </td>
-              </tr>
-            </React.Fragment>
+            <tr key={row.id}> {/* Cambia key a row.id */}
+              <td>{row.id}</td>
+              <td>{row.RIF}</td>
+              <td>{row.NombreContr}</td>
+              <td>{row.GerenciaContr}</td>
+              <td>{row.NContrato}</td>
+              <td>{row.FechaInicio}</td>
+              <td>{row.FechaFin}</td>
+            </tr>
           ))}
         </tbody>
       </table>

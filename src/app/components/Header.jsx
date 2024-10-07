@@ -1,3 +1,4 @@
+'use client'
 import React from "react";
 import styles from "./styles/Header.module.css";
 import { FaBars, FaUserCircle } from "react-icons/fa";
