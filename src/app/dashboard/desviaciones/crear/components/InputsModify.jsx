@@ -12,7 +12,8 @@ const InputComponent = ({
   options = [],
   styled = false,
   style = {},
-  readOnly = false
+  readOnly = false,
+  fieldName =false, // Nuevo prop para identificar el campo
 }) => {
   return (
     <div
@@ -32,7 +33,7 @@ const InputComponent = ({
       {type === "select" ? (
         <select
           value={value}
-          onChange={onChange}
+          onChange={(e) => onChange(e, fieldName)} // Envía el fieldName en el cambio
           className={clsx(styled ? styles.inputFieldStyled : styles.inputField)}
         >
           <option value="" disabled>
@@ -48,11 +49,14 @@ const InputComponent = ({
         <input
           type={type}
           value={value}
-          onChange={onChange}
+          onChange={(e) => onChange(e, fieldName)} // Envía el fieldName en el cambio
           placeholder={placeholder}
           style={style}
           readOnly={readOnly}
-          className={clsx(styled ? styles.inputFieldStyled : styles.inputField)}
+          className={clsx(
+            styled ? styles.inputFieldStyled : styles.inputField,
+            type === "file" ? styles.inputFile : "" // Clase especial para tipo file
+          )}
         />
       )}
     </div>

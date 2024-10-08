@@ -112,3 +112,22 @@
   border-radius: 10px;
   width: 100%; /* Ocupa el 100% del ancho del contenedor */
 }
+
+.inputFile {
+  padding: 10px;
+  background-color: #FFFFFF;
+  border: 1px solid #404040;
+  border-radius: 4px; /* Asegúrate de que tenga bordes redondeados como otros inputs */
+  width: 100%; /* Ocupa todo el ancho disponible */
+  cursor: pointer;
+}
+
+.inputFile:hover {
+  background-color: #f0f0f0; /* Un pequeño cambio de color al pasar el mouse */
+}
+
+.inputFile:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+  outline: none;
+}

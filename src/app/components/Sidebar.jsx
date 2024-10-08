@@ -172,7 +172,7 @@ function Sidebar({ isOpen }) {
           </div>
           <ul className={clsx(styles.submenu, { [styles.open]: isOpenMenu4 })}>
             <li className="nav-item mb-2">
-              <Link href="/subpage7" className="nav-link text-black">
+              <Link href="/dashboard/formaciones/capacitacion" className="nav-link text-black">
                 Capacitación
               </Link>
             </li>
