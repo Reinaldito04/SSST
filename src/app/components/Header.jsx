@@ -1,5 +1,5 @@
 'use client'
-import React from "react";
+import React, { useState } from "react";
 import styles from "./styles/Header.module.css";
 import { FaBars, FaUserCircle } from "react-icons/fa";
 import petropiar from "../assets/logopetropiar.JPG";
@@ -7,24 +7,39 @@ import Image from "next/image";
 import { IoIosArrowDown } from "react-icons/io";
 
 function Header({ toggleSidebar }) {
-  // Obtener el nombre de usuario del localStorage
   const username = localStorage.getItem("username") || "Usuario";
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
+  };
 
   return (
     <header className={styles.header}>
       <div className={styles.leftSection}>
         <div className={styles.menuIcon} onClick={toggleSidebar}>
-          <FaBars size={30} />
+          <FaBars size={30} className={styles.barsIcon} />
         </div>
         <div className={styles.logo}>
           <Image src={petropiar} alt="Logo" width={200} height={50} />
         </div>
       </div>
 
-      <div className={styles.userSection}>
-        <IoIosArrowDown size={20} className={styles.iconArrow} />
-        <div className={styles.userName}>{username}</div> {/* Mostrar nombre de usuario */}
-        <FaUserCircle size={30} className={styles.userIcon} />
+      <div className={styles.userSection} onClick={toggleMenu}>
+        <div className={styles.userInfo}>
+          <FaUserCircle size={30} className={styles.userIcon} />
+          <div className={styles.userName}>{username}</div>
+          <IoIosArrowDown size={20} className={styles.iconArrow} />
+        </div>
+        {isMenuOpen && (
+          <div className={styles.dropdownMenu}>
+            <ul>
+              <li>Perfil</li>
+              <li>Configuraciones</li>
+              <li>Cerrar sesión</li>
+            </ul>
+          </div>
+        )}
       </div>
     </header>
   );

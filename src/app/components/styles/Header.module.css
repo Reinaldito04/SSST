@@ -1,50 +1,120 @@
+/* Header general */
 .header {
-    width: 100%;
-    background-color: #f8f9fa; /* Color de fondo gris claro */
-    display: flex;
-    align-items: center;
-    justify-content: space-between; /* Espacio entre elementos */
-    padding: 0 20px; /* Espacio lateral */
-    padding-block: 20px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Sombra más sutil */
-    
-    transition: background-color 0.3s ease; /* Efecto de transición suave */
+  width: 100%;
+  background-color: #f8f9fa; 
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  padding-block: 20px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s ease;
+}
 
-  }
-  
-  .leftSection {
-    display: flex; /* Usar flexbox para alinear el icono y el logo */
-    align-items: center; /* Alinear verticalmente */
-  }
-  
-  .menuIcon {
-    cursor: pointer; /* Cambia el cursor al pasar sobre el icono */
-    margin-right: 15px; /* Espacio entre el icono de menú y el logo */
-  }
-  
-  .logo {
-    display: flex;
-    align-items: center; /* Centrar verticalmente el logo */
-  }
-  
-  .userSection {
-    display: flex;
-    align-items: center; /* Centrar verticalmente el texto y el icono */
-  }
-  
-  .userName {
-    font-weight: bold;
-    font-size: 18px; /* Tamaño de fuente un poco más pequeño */
-    color: #343a40; /* Color del texto */
-    margin-right: 10px; /* Espacio entre el texto y el icono */
-  }
-  
-  .userIcon {
-    color: black; /* Color del icono de usuario */
-  }
-  .iconArrow{
-    margin-left: 10px;
-    margin-right: 10px;
-    
-  }
-  
+.leftSection {
+  display: flex;
+  align-items: center;
+}
+
+.menuIcon {
+  cursor: pointer;
+  margin-right: 15px;
+  transition: transform 0.3s ease; /* Para animación */
+}
+
+.menuIcon:hover .barsIcon {
+  transform: rotate(90deg); /* Rota el icono al hacer hover */
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+}
+
+.userSection {
+  position: relative; /* Para que el menú se posicione bien */
+}
+
+.userInfo {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  padding: 10px 15px;
+  border-radius: 30px;
+  background-color: #e9ecef;
+  transition: background-color 0.3s ease;
+}
+
+.userInfo:hover {
+  background-color: #dee2e6;
+}
+
+.userName {
+  font-weight: bold;
+  font-size: 18px;
+  color: #343a40;
+  margin-right: 10px;
+  margin-left: 5px;
+}
+
+.userIcon {
+  color: #343a40;
+}
+
+.iconArrow {
+  color: #343a40;
+  transition: transform 0.3s ease; /* Animación del icono */
+}
+
+.userSection:hover .iconArrow {
+  transform: rotate(180deg); /* Rota el icono de la flecha */
+}
+
+.dropdownMenu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  min-width: 180px;
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: all 0.3s ease;
+  opacity: 1;
+  z-index: 1000;
+}
+
+.dropdownMenu ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.dropdownMenu li {
+  padding: 12px 20px;
+  color: #343a40;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.dropdownMenu li:hover {
+  background-color: #f1f1f1;
+}
+
+/* Ocultar menú con animación */
+.userSection:hover .dropdownMenu {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Animaciones para el icono del menú */
+.barsIcon {
+  transition: transform 0.3s ease; /* Para rotar el icono */
+}
+
+.menuIcon:active .barsIcon {
+  transform: scale(1.1); /* Pequeña ampliación al hacer clic */
+}
