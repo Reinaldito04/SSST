@@ -1,10 +1,17 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import CustomButton from "@/app/components/CustomBotton";
 import InputComponent from "@/app/dashboard/desviaciones/crear/components/InputsModify";
 import { axioInstance } from "@/app/utils/axioInstance";
-
+import { useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 function FormCapacitacion() {
+
+  const router = useRouter();
+  const searchParam = useSearchParams()
+  const id = searchParam.get('id')
+
+
   const [formData, setFormData] = useState({
     Fecha: "",
     Tema: "",
@@ -15,6 +22,33 @@ function FormCapacitacion() {
     HE: "",
     archivo: null, // Para el archivo
   });
+
+  // Efecto para cargar los datos si hay un ID en la URL
+  useEffect(() => {
+    const fetchCapacitacion = async () => {
+      if (id) { // Verifica si el ID está presente
+        try {
+          const response = await axioInstance.get(`/capacitacion/getCapacitacion/${id}`); // Realiza la petición GET
+          const data = response.data;
+          setFormData({
+            Fecha: data.Fecha,
+            Tema: data.Tema,
+            Objetivo: data.Objetivo,
+            Expositor: data.Expositor,
+            participantes: data.participantes,
+            HP: data.HP,
+            HE: data.HE,
+            archivo: null, // Para manejar el archivo de forma diferente si es necesario
+          });
+        } catch (error) {
+          console.error("Error fetching capacitacion:", error);
+          alert("Error al cargar la capacitación");
+        }
+      }
+    };
+
+    fetchCapacitacion();
+  }, [id]); // Dependencia para que se ejecute cuando cambie el ID
 
   const handleChange = (e, fieldName) => {
     const { type, value, files } = e.target;
@@ -45,19 +79,33 @@ function FormCapacitacion() {
     formToSend.append('archivo', formData.archivo);
   
     try {
-      const response = await axioInstance.post("/capacitacion/addCapacitacion", formToSend, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
-  
-      console.log(response.data);
-      alert("Capacitación añadida correctamente");
+      
+      if (id) {
+        // Si hay ID, realiza una petición PUT
+        const response = await axioInstance.put(`/capacitacion/modifyCapacitacion/${id}`, formToSend, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+        console.log(response.data);
+        alert("Capacitación actualizada correctamente");
+      } else {
+        // Si no hay ID, realiza una petición POST
+        const response = await axioInstance.post("/capacitacion/addCapacitacion", formToSend, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+        console.log(response.data);
+        alert("Capacitación añadida correctamente");
+      }
+      router.push('/dashboard/formaciones')
     } catch (error) {
       console.error(error);
       alert("Error al añadir capacitación");
     }
   };
+
   return (
     <form onSubmit={handleSubmit}>
       <div className="row">

@@ -11,3 +11,8 @@
     opacity: 0.8; /* Cambia la opacidad al pasar el mouse */
   }
   
+  .customButton:disabled {
+    background-color: #ccc; /* Color gris para botones deshabilitados */
+    cursor: not-allowed; /* Muestra que el botón no es clickeable */
+    opacity: 0.65; /* Reduce un poco la opacidad para botones deshabilitados */
+  }

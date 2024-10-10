@@ -9,6 +9,7 @@ function CustomButton({
   onClick, 
   style = {}, 
   className = '', 
+  disabled = false,
   ...props 
 }) {
   const buttonStyles = {
@@ -18,6 +19,7 @@ function CustomButton({
 
   return (
     <button
+      disabled={disabled}
       onClick={onClick}
       style={{ ...buttonStyles, ...style }}
       className={clsx(styles.customButton, className)}
