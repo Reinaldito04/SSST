@@ -153,11 +153,7 @@ function Sidebar({ isOpen }) {
                 Sistemas contra Incendio
               </Link>
             </li>
-            <li className="nav-item mb-2">
-              <Link href="/subpage6" className="nav-link text-black">
-                Higiene ocupacional{" "}
-              </Link>
-            </li>
+            
           </ul>
         </li>
 
