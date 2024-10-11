@@ -202,7 +202,6 @@ function Tabla() {
           onClick={handleModify} // Llamada a la nueva función de modificar
           className="mx-auto"
           style={{ width: "200px" }}
-          disabled={!activeRow}
         />
         <CustomButton
           label="Exportar"

@@ -136,7 +136,7 @@ function Sidebar({ isOpen }) {
           </div>
           <ul className={clsx(styles.submenu, { [styles.open]: isOpenMenu3 })}>
             <li className="nav-item mb-2">
-              <Link href="/subpage5" className="nav-link text-black">
+              <Link href="/dashboard/cronograma/cumplimiento" className="nav-link text-black">
                 Cronograma
               </Link>
             </li>
