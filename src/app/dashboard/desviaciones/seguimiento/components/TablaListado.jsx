@@ -19,7 +19,7 @@ function Tabla() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axioInstance.get("/desviaciones/getDesviaciones");
+        const response = await axioInstance.get("/desviaciones/getSeguimiento");
         setData(response.data);
         setLoading(false);
       } catch (err) {
@@ -63,11 +63,11 @@ function Tabla() {
           <tr>
             <th>ID</th>
             <th>Descripción Hallazgo</th>
-            <th>Causa Raiz</th>
-            <th>Tipo de Inspección</th>
-            <th>Severidad</th>
-            <th>Frecuencia</th>
-            <th>Nivel</th>
+            <th>Area</th>
+            <th>Detección</th>
+            <th>Seguimiento</th>
+            <th>Avance</th>
+            <th>Responsable</th>
           </tr>
         </thead>
         <tbody>
@@ -75,11 +75,11 @@ function Tabla() {
             <tr key={index}>
               <td>{row.ID}</td>
               <td>{row.Descripcion}</td>
-              <td>{row.CausaRaiz}</td>
-              <td>{row.TipoInspeccion}</td>
-              <td>{row.Severidad}</td>
-              <td>{row.Frecuencia}</td>
-              <td>{row.Nivel}</td>
+              <td>{row.Area}</td>
+              <td>{row.Deteccion}</td>
+              <td>{row.Seguimiento}</td>
+              <td>{row.Avance}</td>
+              <td>{row.Responsable}</td>
             </tr>
           ))}
         </tbody>

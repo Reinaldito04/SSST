@@ -67,15 +67,13 @@ function Tabla() {
           router.push(`/dashboard/cronograma/cumplimiento?id=${activeRow}`);
         }
       });
-    } 
-    else {
+    } else {
       toast.warn("Debe seleccionar una fila para modificar."); // Notificación de advertencia
     }
   };
   return (
     <div className={styles.tableContainer}>
-              <ToastContainer /> {/* Componente de notificación */}
-
+      <ToastContainer /> {/* Componente de notificación */}
       <input
         type="text"
         placeholder="Buscar Observacion..."
@@ -131,6 +129,7 @@ function Tabla() {
             width: "20%",
           }}
         />
+
         <CustomButton
           label="Ver Gráfica"
           backgroundColor="#EE3333"
@@ -138,6 +137,17 @@ function Tabla() {
           style={{
             width: "20%",
           }}
+        />
+        <CustomButton
+          label="Agregar"
+          backgroundColor="#2F2F2F"
+          textColor="#FFFFFF"
+          style={{
+            width: "20%",
+          }}
+          onClick={
+            () => router.push("/dashboard/cronograma/cumplimiento")
+          }
         />
       </div>
       <div className={styles.recordCount}>
