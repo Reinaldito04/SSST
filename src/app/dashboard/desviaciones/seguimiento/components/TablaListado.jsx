@@ -183,7 +183,7 @@ function Tabla() {
               padding: "10px 40px",
             }}
             onClick={() => {
-              alert("Administrador Registrado");
+              router.push('/dashboard/desviaciones/estadisticas')
             }}
           />
         </div>

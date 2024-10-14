@@ -245,7 +245,7 @@ function Sidebar({ isOpen }) {
               </Link>
             </li>
             <li className="nav-item mb-2">
-              <Link href="/subpage12" className="nav-link text-black">
+              <Link href="/dashboard/desviaciones/estadisticas" className="nav-link text-black">
                 Estadistica Desviaciones
               </Link>
             </li>

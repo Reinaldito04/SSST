@@ -147,7 +147,7 @@ function Tabla() {
                 }
             }
             onClick={() => {
-              alert("Administrador Registrado");
+              router.push('/dashboard/desviaciones/estadisticas/')
             }}
           />
         </div>
