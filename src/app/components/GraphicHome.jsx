@@ -1,6 +1,7 @@
 "use client";
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
+import { axioInstance } from "../utils/axioInstance";
 
 // Carga dinámica del componente Plotly
 const Plot = dynamic(() => import("react-plotly.js"), { ssr: false });
@@ -14,14 +15,14 @@ const GraphicHome = ({ urlEndpoint }) => {
     // Cargar los datos de la API
     const fetchGraphData = async () => {
       try {
-        const response = await fetch(
+        const response = await axioInstance.get(
           `http://localhost:8000/graph/${urlEndpoint}`
         ); // Llama a la API
-        const jsonData = await response.json(); // Convierte la respuesta a JSON
 
         // Establece los datos y el layout según lo recibido
-        const graphData = jsonData.data;
-        const graphLayout = jsonData.layout;
+        const graphData = response.data.data; // Ajusta esto según la estructura real de tu respuesta
+        const graphLayout = response.data.layout;
+        
 
         setData(graphData); // Establecer los datos de la gráfica
         setLayout(graphLayout); // Establecer el layout de la gráfica

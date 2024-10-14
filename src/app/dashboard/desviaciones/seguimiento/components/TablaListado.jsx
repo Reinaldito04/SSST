@@ -5,6 +5,13 @@ import styles from "@/app/dashboard/administradores/consultar/styles/Tabla.modul
 import CustomButton from "@/app/components/CustomBotton";
 import { axioInstance } from "@/app/utils/axioInstance";
 import { useRouter } from "next/navigation";
+import Swal from "sweetalert2"; // Importar SweetAlert2
+import withReactContent from "sweetalert2-react-content"; // SweetAlert2 para React
+import { toast, ToastContainer } from "react-toastify"; // Importar React Toastify
+import "react-toastify/dist/ReactToastify.css"; // Importar los estilos de Toastify
+
+const MySwal = withReactContent(Swal); // Crear la instancia de MySwal
+
 function Tabla() {
   const router = useRouter();
   const [activeRow, setActiveRow] = useState(null);
@@ -46,11 +53,36 @@ function Tabla() {
     setCurrentPage(page);
   };
 
+  const handleRowSelect = (row) => {
+    setActiveRow(row);
+  };
+
+  const handleModify = () => {
+    if (activeRow) {
+      MySwal.fire({
+        title: "¿Deseas modificar la desviación?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Sí, modificar",
+        cancelButtonText: "Cancelar",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          router.push(`/dashboard/desviaciones/seguimiento?id=${activeRow.IDDesviacion}`);
+        }
+      });
+    } else {
+      toast.warn("Debe seleccionar una fila para modificar."); // Notificación de advertencia
+    }
+  };
+
   if (loading) return <p>Cargando datos...</p>;
   if (error) return <p>{error}</p>;
 
   return (
     <div className={styles.tableContainer}>
+      <ToastContainer/>
       <input
         type="text"
         placeholder="Buscar hallazgo..."
@@ -61,6 +93,8 @@ function Tabla() {
       <table className={styles.table}>
         <thead>
           <tr>
+
+            <th>Modificar</th>
             <th>ID</th>
             <th>Descripción Hallazgo</th>
             <th>Area</th>
@@ -73,12 +107,21 @@ function Tabla() {
         <tbody>
           {currentData.map((row, index) => (
             <tr key={index}>
-              <td>{row.ID}</td>
+
+              <td>
+                <input
+                  type="radio"
+                  name="selectRow"
+                  onChange={() => handleRowSelect(row)}
+                  checked={activeRow?.IDDesviacion === row.IDDesviacion}
+                />
+              </td>
+              <td>{row.IDDesviacion}</td>
               <td>{row.Descripcion}</td>
               <td>{row.Area}</td>
               <td>{row.Deteccion}</td>
               <td>{row.Seguimiento}</td>
-              <td>{row.Avance}</td>
+              <td>{row.Avance} %</td>
               <td>{row.Responsable}</td>
             </tr>
           ))}
@@ -103,49 +146,42 @@ function Tabla() {
         </button>
       </div>
       <div className="">
-        <div className=""
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          gap: "10px",
-          alignItems: "center",
-          width: "100%",
-          marginTop: "50px",
-          marginBottom: "10px",
-        }}
+        <div
+          className=""
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            gap: "10px",
+            alignItems: "center",
+            width: "100%",
+            marginTop: "50px",
+            marginBottom: "10px",
+          }}
         >
           <CustomButton
             label="Seguimiento"
             backgroundColor="#5B5B5B"
             textColor="#ffffff"
-            style={
-                {
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "10px",
-               
-                  justifyContent: "center",
-                  padding: "10px 40px",
-                }
-            }
-            onClick={() => {
-              router.push('/dashboard/desviaciones/seguimiento')
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "10px",
+              justifyContent: "center",
+              padding: "10px 40px",
             }}
+            onClick={handleModify} // Llamada a la nueva función de modificar
           />
-           <CustomButton
-            label="Ver Estadistica"
+          <CustomButton
+            label="Ver Estadística"
             backgroundColor="#EE3333"
             textColor="#ffffff"
-            style={
-                {
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "10px",
-                
-                  justifyContent: "center",
-                  padding: "10px 40px",
-                }
-            }
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "10px",
+              justifyContent: "center",
+              padding: "10px 40px",
+            }}
             onClick={() => {
               alert("Administrador Registrado");
             }}

@@ -1,0 +1,44 @@
+.tableContainer {
+    overflow-x: auto;
+  }
+  
+  .dataTable {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+  }
+  
+  .dataTable th,
+  .dataTable td {
+    padding: 12px;
+    text-align: center;
+    border: 1px solid #ddd;
+  }
+  
+  .dataTable th {
+    background-color: #007bff;
+    color: white;
+  }
+  
+  .riskColumn {
+    position: relative;
+  }
+  
+  .riskSubcolumns {
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .riskSubcolumns span {
+    width: 50.50%; /* Dividir el espacio entre Bajo, Medio y Alto */
+  }
+
+  .bajo{
+    background-color: #156943;
+  }
+  .medio{
+    background-color: #FFC107;
+  }
+  .alto{
+    background-color: #DC3545;
+  }

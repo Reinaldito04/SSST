@@ -129,7 +129,7 @@ function Tabla() {
                 }
             }
             onClick={() => {
-              router.push('/dashboard/desviaciones/seguimiento')
+              router.push('/dashboard/desviaciones/seguimiento/listado')
             }}
           />
            <CustomButton
