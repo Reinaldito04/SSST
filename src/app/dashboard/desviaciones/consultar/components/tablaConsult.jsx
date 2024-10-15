@@ -5,6 +5,7 @@ import styles from "@/app/dashboard/administradores/consultar/styles/Tabla.modul
 import CustomButton from "@/app/components/CustomBotton";
 import { axioInstance } from "@/app/utils/axioInstance";
 import { useRouter } from "next/navigation";
+import Loading from "@/app/components/Loading";
 function Tabla() {
   const router = useRouter();
   const [activeRow, setActiveRow] = useState(null);
@@ -46,7 +47,7 @@ function Tabla() {
     setCurrentPage(page);
   };
 
-  if (loading) return <p>Cargando datos...</p>;
+  if (loading) return <Loading/>;
   if (error) return <p>{error}</p>;
 
   return (

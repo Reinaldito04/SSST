@@ -1,10 +1,8 @@
 import LayoutSidebar from "@/app/components/layoutSidebar";
 import UrlRow from "@/app/components/urlRow";
 import clsx from "clsx";
-import styles from "../consultar/styles/consultarPage.module.css";
-import DataTable from "./components/TablaElementos";
-import CustomButton from "@/app/components/CustomBotton";
-import Link from "next/link";
+import styles from '@/app/dashboard/desviaciones/consultar/styles/consultarPage.module.css'
+import ObservacionesGrafica from "../components/GraficaNiveles";
 
 function Page() {
   const breadcrumbs = [
@@ -14,11 +12,11 @@ function Page() {
     },
     {
       label: "Desviaciones",
-      link: "/dashboard/desviaciones",
+      link: "/dashboard/desviaciones/estadisticas",
     },
     {
-      label: "Estadistica Desviaciones",
-      link: "/dashboard/desviaciones/estadisticas",
+      label: "Niveles de Riesgos",
+      link: "/dashboard/desviaciones/niveles-riesgo",
     },
   ];
 
@@ -55,31 +53,19 @@ function Page() {
         }}
       >
         <h3 className="text-center">
-          Desviaciones detectadas en SI/RCE en el CBP
+        Niveles de Riesgo
         </h3>
       </div>
       <div className={clsx(styles.contenedorPage, "container")}>
-        <DataTable />
-        <div className="container-fluid d-flex justify-content-end">
-          {/* Usa el componente Link para la navegación */}
-          <Link href="/dashboard/desviaciones/estadisticas/niveles-riego">
-            <CustomButton
-              label="Niveles de Riesgo"
-              backgroundColor="#EE3333"
-              textColor="#FFFFFF"
-            />
-          </Link>
-          <Link href="/dashboard/desviaciones/estadisticas/corregidas">
-            <CustomButton
-              style={{
-                marginLeft: "10px",
-              }}
-              label="Desviaciones Corregidas"
-              backgroundColor="#161A6A"
-              textColor="#FFFFFF"
-            />
-          </Link>
+       <p className="text-center">Niveles de Riesgo de las Observaciones de Inspecciones de Campo 
+        </p>
+        <p className="text-center">
+        </p>
+        <div>
+        <ObservacionesGrafica/>
+
         </div>
+       
       </div>
     </LayoutSidebar>
   );

@@ -3,6 +3,7 @@ import { axioInstance } from "@/app/utils/axioInstance";
 import React, { useEffect, useState } from "react";
 import styles from "@/app/dashboard/administradores/consultar/styles/Tabla.module.css";
 import CustomButton from "@/app/components/CustomBotton";
+import Loading from "@/app/components/Loading";
 
 function Tabla() {
   const [activeRow, setActiveRow] = useState(null);
@@ -10,19 +11,23 @@ function Tabla() {
   const [searchTerm, setSearchTerm] = useState("");
   const [data, setData] = useState([]); // Estado para almacenar los datos
   const itemsPerPage = 5;
+  const [loading,setLoading]= useState(true)
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await axioInstance.get("/contratistas/all"); // Ajusta la ruta según tu API
         setData(response.data);
+        setLoading(false)
       } catch (error) {
         console.error("Error al obtener los datos:", error);
+        setLoading(false)
       }
     };
 
     fetchData();
   }, []);
+  if (loading) return <Loading/>
 
   const filteredData = data.filter((row) =>
     row.NombreContr.toLowerCase().includes(searchTerm.toLowerCase())

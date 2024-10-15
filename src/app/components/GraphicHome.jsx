@@ -2,6 +2,7 @@
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 import { axioInstance } from "../utils/axioInstance";
+import Loading from "./Loading";
 
 // Carga dinámica del componente Plotly
 const Plot = dynamic(() => import("react-plotly.js"), { ssr: false });
@@ -16,7 +17,7 @@ const GraphicHome = ({ urlEndpoint }) => {
     const fetchGraphData = async () => {
       try {
         const response = await axioInstance.get(
-          `http://localhost:8000/graph/${urlEndpoint}`
+          `/graph/${urlEndpoint}`
         ); // Llama a la API
 
         // Establece los datos y el layout según lo recibido
@@ -37,18 +38,19 @@ const GraphicHome = ({ urlEndpoint }) => {
   }, [urlEndpoint]);
 
   if (loading) {
-    return <div>Cargando gráfico...</div>; // Mensaje de carga
+    return <Loading/>; // Mensaje de carga
   }
 
   return (
-    <Plot
+  <Plot
     
-      config={{ responsive: true }}
-      
-      data={data}
-      layout={layout}
-      style={{ width: "auto", height: "auto" }}
-    />
+    config={{ responsive: true }}
+    
+    data={data}
+    layout={layout}
+    style={{ width: "auto", height: "auto" }}
+  />
+  
   );
 };
 

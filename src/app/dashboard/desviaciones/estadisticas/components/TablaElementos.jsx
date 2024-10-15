@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import styles from "./Table.module.css";
 import { axioInstance } from "@/app/utils/axioInstance";
+import Loading from "@/app/components/Loading";
 
 const DataTable = () => {
   const [data, setData] = useState([]);
@@ -23,7 +24,7 @@ const DataTable = () => {
   }, []);
 
   if (loading) {
-    return <div>Cargando...</div>; // Muestra un mensaje de carga
+    return <Loading/>; // Muestra un mensaje de carga
   }
 
   if (error) {

@@ -5,7 +5,7 @@ import { FaBars, FaUserCircle } from "react-icons/fa";
 import petropiar from "../assets/logopetropiar.JPG";
 import Image from "next/image";
 import { IoIosArrowDown } from "react-icons/io";
-
+import Link from "next/link";
 function Header({ toggleSidebar }) {
   const username = localStorage.getItem("username") || "Usuario";
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -20,9 +20,13 @@ function Header({ toggleSidebar }) {
         <div className={styles.menuIcon} onClick={toggleSidebar}>
           <FaBars size={30} className={styles.barsIcon} />
         </div>
-        <div className={styles.logo}>
+        <Link href="/dashboard">
+        <div className={styles.logo} 
+        >
           <Image src={petropiar} alt="Logo" width={200} height={50} />
         </div>
+        </Link>
+       
       </div>
 
       <div className={styles.userSection} onClick={toggleMenu}>

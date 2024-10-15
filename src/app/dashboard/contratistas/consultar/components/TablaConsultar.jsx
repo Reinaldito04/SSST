@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import styles from "@/app/dashboard/administradores/consultar/styles/Tabla.module.css";
 import { axioInstance } from "@/app/utils/axioInstance";
+import Loading from "@/app/components/Loading";
 
 function Tabla() {
   const [activeRow, setActiveRow] = useState(null);
@@ -10,15 +11,18 @@ function Tabla() {
   const [searchTerm, setSearchTerm] = useState("");
   const [data, setData] = useState([]); // Estado para almacenar los datos de la API
   const itemsPerPage = 5; // Cambia este valor según cuántos elementos quieras por página
+  const [loading,setLoading]= useState(true)
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await axioInstance.get("/contratistas/consultContratist");
         setData(response.data); // Usa response.data directamente
+        setLoading(false);
       } catch (error) {
         console.error("Error fetching data:", error);
         alert("Error fetching data: " + error.message); // Alertar en caso de error
+        setLoading(false);
       }
     };
 
@@ -35,6 +39,7 @@ function Tabla() {
   const endIndex = startIndex + itemsPerPage;
   const currentData = filteredData.slice(startIndex, endIndex);
 
+  if (loading) return <Loading/>
   const handlePageChange = (page) => {
     setCurrentPage(page);
   };
