@@ -191,7 +191,9 @@ function Tabla() {
           label="Ver Gráfica"
           backgroundColor="#EE3333"
           textColor="#FFFFFF"
-          onClick={() => toast.info("Ver Gráfica - Funcionalidad pendiente")}
+          onClick={() => 
+            router.push("/dashboard/formaciones/capacitacion/grafica")
+          }
           className="mx-auto"
           style={{ width: "200px" }}
         />

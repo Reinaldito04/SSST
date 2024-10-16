@@ -48,7 +48,7 @@ const GraphicHome = ({ urlEndpoint }) => {
     
     data={data}
     layout={layout}
-    style={{ width: "auto", height: "auto" }}
+    style={{ width: "auto", height: "auto" ,borderRadius:'15px'}}
   />
   
   );

@@ -25,6 +25,10 @@ function GraphComponent() {
         <Plot
           data={graphData.data}
           layout={graphData.layout}
+          config={{ responsive: true }}
+    
+ 
+    style={{ width: "auto", height: "auto" }}
         />
       ) : (
         <p>Loading graph...</p>

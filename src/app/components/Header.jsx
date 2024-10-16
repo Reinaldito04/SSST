@@ -1,5 +1,5 @@
 'use client'
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import styles from "./styles/Header.module.css";
 import { FaBars, FaUserCircle } from "react-icons/fa";
 import petropiar from "../assets/logopetropiar.JPG";
@@ -7,8 +7,21 @@ import Image from "next/image";
 import { IoIosArrowDown } from "react-icons/io";
 import Link from "next/link";
 function Header({ toggleSidebar }) {
-  const username = localStorage.getItem("username") || "Usuario";
+
+
+  const [username, setUsername] = useState("Usuario");
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  // Usamos useEffect para asegurarnos de que el código solo se ejecute en el cliente
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const storedUsername = localStorage.getItem("username");
+      if (storedUsername) {
+        setUsername(storedUsername);
+      }
+    }
+  }, []);
+
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
