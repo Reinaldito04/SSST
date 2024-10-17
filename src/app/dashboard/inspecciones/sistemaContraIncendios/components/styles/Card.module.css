@@ -1,6 +1,7 @@
 .line {
     width: 5px; /* Ancho de la línea */
-    height: 100px; /* Altura de la línea ocupa el 100% del contenedor */
+    height: 100px; /* Altura de la línea */
+    transition: background-color 0.3s ease-in-out, height 0.3s ease-in-out;
 }
 
 .card {
@@ -10,12 +11,30 @@
     padding: 0px;
     background-color: white; /* Fondo blanco */
     min-height: 100px; /* Altura mínima para que la línea tenga referencia */
+    transition: box-shadow 0.3s ease-in-out, transform 0.3s ease-in-out;
+}
+
+.card:hover {
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15); /* Sombra más grande y difusa */
+    transform: translateY(-5px); /* Eleva la tarjeta */
+    cursor: pointer;
+}
+
+.card:hover .line {
+    background-color: #FF5733; /* Cambia el color de la línea al hacer hover */
 }
 
 .cardtitle {
     font-weight: bold; /* Título en negrita */
+    transition: color 0.3s ease-in-out;
 }
 
 .cardsubtitle {
     font-size: 0.9rem; /* Tamaño del subtítulo */
+    transition: color 0.3s ease-in-out;
+}
+
+.card:hover .cardtitle,
+.card:hover .cardsubtitle {
+    color: #333333; /* Cambia el color del texto al pasar el mouse */
 }

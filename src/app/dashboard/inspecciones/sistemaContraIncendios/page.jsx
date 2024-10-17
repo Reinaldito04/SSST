@@ -11,8 +11,10 @@ function Page() {
 
   const cardDataTop = [
     { title: "Estatus", subtitle: "Ir al módulo",colorLine :'#EE3333',colorText:'#EE3333' },
-    { title: "Registrar", subtitle: "Ir al módulo" ,colorLine :'#161A6A',colorText:'#161A6A'},
-    { title: "Gráfica", subtitle: "Ir al módulo" ,colorLine :'#FFFFFF',colorText:'#716E6E'},
+    { title: "Registrar", subtitle: "Ir al módulo" ,colorLine :'#161A6A',colorText:'#161A6A',
+      destiny: 'registrar'
+    },
+    { title: "Gráfica", subtitle: "Ir al módulo" ,colorLine :'#716E6E',colorText:'#716E6E'},
     { title: "Consultar", subtitle: "Ir al módulo",colorLine :'#161A6A',colorText:'#161A6A' },
   ];
 
@@ -33,8 +35,8 @@ function Page() {
           <div className="container-fluid">
           <div className="row">
             {cardDataTop.map((card, index) => (
-              <div className="col-md-4 mb-4" key={index}>
-                <CardIncendio title={card.title} subtitle={card.subtitle} colorLine={card.colorLine} colorText={card.colorText} />
+              <div className="col-md-6 mb-4" key={index}>
+                <CardIncendio title={card.title} subtitle={card.subtitle} colorLine={card.colorLine} colorText={card.colorText} RouterDestiny={card.destiny} />
               </div>
             ))}
           </div>
