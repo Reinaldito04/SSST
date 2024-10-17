@@ -15,7 +15,9 @@ function Page() {
       destiny: 'registrar'
     },
     { title: "Gráfica", subtitle: "Ir al módulo" ,colorLine :'#716E6E',colorText:'#716E6E'},
-    { title: "Consultar", subtitle: "Ir al módulo",colorLine :'#161A6A',colorText:'#161A6A' },
+    { title: "Consultar", subtitle: "Ir al módulo",colorLine :'#161A6A',colorText:'#161A6A',
+      destiny: 'consultar'
+     },
   ];
 
   const cardDataBottom = [
