@@ -5,9 +5,13 @@ import styles from "@/app/dashboard/administradores/consultar/styles/Tabla.modul
 import CustomButton from "@/app/components/CustomBotton";
 import { axioInstance } from "@/app/utils/axioInstance";
 import { useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
+import Loading from "@/app/components/Loading";
 function Tabla() {
+  const router = useRouter()
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
+  
   const [data, setData] = useState([]); // Estado para almacenar los datos del backend
   const [loading, setLoading] = useState(true); // Estado para mostrar una carga mientras se obtienen los datos
   const itemsPerPage = 5;
@@ -42,7 +46,7 @@ function Tabla() {
   const currentData = filteredData.slice(startIndex, endIndex);
 
   if (loading) {
-    return <div>Cargando datos...</div>;
+    return <Loading/>;
   }
 
   return (
@@ -119,7 +123,9 @@ function Tabla() {
               padding: "10px 40px",
             }}
             onClick={() => {
-              alert("Mostrando gráfica...");
+              router.push('/dashboard/contratistas/control&seguimiento/grafica')
+             
+              
             }}
           />
         </div>
