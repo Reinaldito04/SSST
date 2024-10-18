@@ -17,8 +17,15 @@ function Sidebar({ isOpen }) {
   const [isOpenMenu4, setIsOpenMenu4] = useState(false);
   const [isOpenMenu5, setIsOpenMenu5] = useState(false);
   const [isOpenMenu6, setIsOpenMenu6] = useState(false);
+  const [userType, setUserType] = useState("");
 
   useEffect(() => {
+    // Obtener tipo de usuario desde localStorage
+    const storedUserType = localStorage.getItem("typeUser");
+    if (storedUserType) {
+      setUserType(storedUserType);
+    }
+
     // Cargar el estado del sidebar desde localStorage
     const savedState = JSON.parse(localStorage.getItem("sidebarState"));
     if (savedState) {
@@ -42,14 +49,7 @@ function Sidebar({ isOpen }) {
       isOpenMenu6,
     };
     localStorage.setItem("sidebarState", JSON.stringify(sidebarState));
-  }, [
-    isOpenMenu1,
-    isOpenMenu2,
-    isOpenMenu3,
-    isOpenMenu4,
-    isOpenMenu5,
-    isOpenMenu6,
-  ]);
+  }, [isOpenMenu1, isOpenMenu2, isOpenMenu3, isOpenMenu4, isOpenMenu5, isOpenMenu6]);
 
   const toggleMenu1 = () => setIsOpenMenu1(!isOpenMenu1);
   const toggleMenu2 = () => setIsOpenMenu2(!isOpenMenu2);
@@ -59,71 +59,34 @@ function Sidebar({ isOpen }) {
   const toggleMenu6 = () => setIsOpenMenu6(!isOpenMenu6);
 
   return (
-    <div
-      className={clsx(styles.sidebar, "scrollable-sectionNavbar", {
-        [styles.open]: isOpen,
-      })}
-    >
+    <div className={clsx(styles.sidebar, "scrollable-sectionNavbar", { [styles.open]: isOpen })}>
       <ul className={clsx(styles.sidebarMenu, "nav flex-column")}>
-        <li className={clsx(styles.navLink, "nav-item")}>
-          <div
-            className="nav-link text-black d-flex justify-content-between align-items-center"
-            onClick={toggleMenu1}
-            style={{ cursor: "pointer" }}
-          >
-            <FaUserTimes size={25} /> Administradores
-            <span>{isOpenMenu1 ? "▼" : "►"}</span>
-          </div>
-          <ul className={clsx(styles.submenu, { [styles.open]: isOpenMenu1 })}>
-            <li className="nav-item mb-2">
-              <Link
-                href="/dashboard/administradores/registrar"
-                className="nav-link text-black"
-              >
-                Registrar Admin
-              </Link>
-            </li>
-            <li className="nav-item mb-2">
-              <Link
-                href="/dashboard/administradores/consultar"
-                className="nav-link text-black"
-              >
-                Gestionar Admin
-              </Link>
-            </li>
-            <li className="nav-item mb-2">
-              <Link
-                href="/dashboard/administradores/consultar"
-                className="nav-link text-black"
-              >
-                Consultar Admin
-              </Link>
-            </li>
-          </ul>
-        </li>
-
-        <li className={clsx(styles.navLink, "nav-item")}>
-          <div
-            className="nav-link text-black d-flex justify-content-between align-items-center"
-            onClick={toggleMenu2}
-            style={{ cursor: "pointer" }}
-          >
-            <FaUserCheck size={25} /> Usuarios
-            <span>{isOpenMenu2 ? "▼" : "►"}</span>
-          </div>
-          <ul className={clsx(styles.submenu, { [styles.open]: isOpenMenu2 })}>
-            <li className="nav-item mb-2">
-              <Link href="/subpage3" className="nav-link text-black">
-                Submenú 2.1
-              </Link>
-            </li>
-            <li className="nav-item mb-2">
-              <Link href="/subpage4" className="nav-link text-black">
-                Submenú 2.2
-              </Link>
-            </li>
-          </ul>
-        </li>
+        
+        {/* Renderizar solo si el usuario es "admin" */}
+        {userType === "Administrador" && (
+          <li className={clsx(styles.navLink, "nav-item")}>
+            <div
+              className="nav-link text-black d-flex justify-content-between align-items-center"
+              onClick={toggleMenu1}
+              style={{ cursor: "pointer" }}
+            >
+              <FaUserTimes size={25} /> Administradores
+              <span>{isOpenMenu1 ? "▼" : "►"}</span>
+            </div>
+            <ul className={clsx(styles.submenu, { [styles.open]: isOpenMenu1 })}>
+              <li className="nav-item mb-2">
+                <Link href="/dashboard/administradores/registrar" className="nav-link text-black">
+                  Registrar User
+                </Link>
+              </li>
+              <li className="nav-item mb-2">
+                <Link href="/dashboard/administradores/consultar" className="nav-link text-black">
+                  Consultar Users
+                </Link>
+              </li>
+            </ul>
+          </li>
+        )}
 
         <li className={clsx(styles.navLink, "nav-item")}>
           <div
@@ -146,14 +109,10 @@ function Sidebar({ isOpen }) {
               </Link>
             </li>
             <li className="nav-item mb-2">
-              <Link
-                href="/dashboard/inspecciones/sistemaContraIncendios"
-                className="nav-link text-black"
-              >
+              <Link href="/dashboard/inspecciones/sistemaContraIncendios" className="nav-link text-black">
                 Sistemas contra Incendio
               </Link>
             </li>
-            
           </ul>
         </li>
 
@@ -186,32 +145,22 @@ function Sidebar({ isOpen }) {
           </div>
           <ul className={clsx(styles.submenu, { [styles.open]: isOpenMenu5 })}>
             <li className="nav-item mb-2">
-              <Link
-                href="/dashboard/contratistas/registrar"
-                className="nav-link text-black"
-              >
+              <Link href="/dashboard/contratistas/registrar" className="nav-link text-black">
                 Registrar Contratista
               </Link>
             </li>
             <li className="nav-item mb-2">
-              <Link
-                href="
-              /dashboard/contratistas/gestionar"
-                className="nav-link text-black"
-              >
+              <Link href="/dashboard/contratistas/gestionar" className="nav-link text-black">
                 Gestionar Contratista
               </Link>
             </li>
             <li className="nav-item mb-2">
-              <Link href=" /dashboard/contratistas/consultar" className="nav-link text-black">
+              <Link href="/dashboard/contratistas/consultar" className="nav-link text-black">
                 Consultar Contratista
               </Link>
             </li>
             <li className="nav-item mb-2">
-              <Link
-                href="/dashboard/contratistas/control&seguimiento"
-                className="nav-link text-black"
-              >
+              <Link href="/dashboard/contratistas/control&seguimiento" className="nav-link text-black">
                 Control y Seguimiento
               </Link>
             </li>
@@ -229,18 +178,12 @@ function Sidebar({ isOpen }) {
           </div>
           <ul className={clsx(styles.submenu, { [styles.open]: isOpenMenu6 })}>
             <li className="nav-item mb-2">
-              <Link
-                href="/dashboard/desviaciones/crear"
-                className="nav-link text-black"
-              >
+              <Link href="/dashboard/desviaciones/crear" className="nav-link text-black">
                 Registrar Desviaciones
               </Link>
             </li>
             <li className="nav-item mb-2">
-              <Link
-                href="/dashboard/desviaciones/consultar"
-                className="nav-link text-black"
-              >
+              <Link href="/dashboard/desviaciones/consultar" className="nav-link text-black">
                 Consultar Desviaciones
               </Link>
             </li>

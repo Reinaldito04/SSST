@@ -1,5 +1,5 @@
-'use client'
-import React, { useState,useEffect } from "react";
+"use client";
+import React, { useState, useEffect } from "react";
 import styles from "./styles/Header.module.css";
 import { FaBars, FaUserCircle } from "react-icons/fa";
 import petropiar from "../assets/logopetropiar.JPG";
@@ -7,8 +7,6 @@ import Image from "next/image";
 import { IoIosArrowDown } from "react-icons/io";
 import Link from "next/link";
 function Header({ toggleSidebar }) {
-
-
   const [username, setUsername] = useState("Usuario");
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -21,7 +19,11 @@ function Header({ toggleSidebar }) {
       }
     }
   }, []);
-
+  const closeSesion = () => {
+    localStorage.removeItem("username");
+    localStorage.removeItem("typeUser");
+    window.location.href = "/";
+  };
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -34,12 +36,10 @@ function Header({ toggleSidebar }) {
           <FaBars size={30} className={styles.barsIcon} />
         </div>
         <Link href="/dashboard">
-        <div className={styles.logo} 
-        >
-          <Image src={petropiar} alt="Logo" width={200} height={50} />
-        </div>
+          <div className={styles.logo}>
+            <Image src={petropiar} alt="Logo" width={200} height={50} />
+          </div>
         </Link>
-       
       </div>
 
       <div className={styles.userSection} onClick={toggleMenu}>
@@ -53,7 +53,7 @@ function Header({ toggleSidebar }) {
             <ul>
               <li>Perfil</li>
               <li>Configuraciones</li>
-              <li>Cerrar sesión</li>
+              <li onClick={closeSesion}>Cerrar sesión</li>
             </ul>
           </div>
         )}

@@ -1,36 +1,37 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styles from "../styles/Tabla.module.css";
 import { IoIosMore } from "react-icons/io";
 import { FaRegTrashAlt } from "react-icons/fa";
+import { axioInstance } from "@/app/utils/axioInstance";
+import Swal from "sweetalert2"; // Importar SweetAlert2
 
 function Tabla() {
   const [activeRow, setActiveRow] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
-  const itemsPerPage = 5; // Cambia este valor según cuántos elementos quieras por página
+  const [data, setData] = useState([]); // Estado para los datos de usuarios
+  const itemsPerPage = 5;
 
-  const data = [
-    { codigo: 1, usuario: "usuario1", contrasena: "****", estado: "Activo", tipo: "Admin" },
-    { codigo: 2, usuario: "usuario2", contrasena: "****", estado: "Inactivo", tipo: "Usuario" },
-    { codigo: 3, usuario: "usuario3", contrasena: "****", estado: "Activo", tipo: "Admin" },
-    { codigo: 4, usuario: "usuario4", contrasena: "****", estado: "Inactivo", tipo: "Usuario" },
-    { codigo: 5, usuario: "usuario5", contrasena: "****", estado: "Activo", tipo: "Admin" },
-    { codigo: 6, usuario: "usuario6", contrasena: "****", estado: "Inactivo", tipo: "Usuario" },
-    { codigo: 7, usuario: "usuario7", contrasena: "****", estado: "Activo", tipo: "Admin" },
-    { codigo: 8, usuario: "usuario8", contrasena: "****", estado: "Inactivo", tipo: "Usuario" },
-    { codigo: 9, usuario: "usuario9", contrasena: "****", estado: "Inactivo", tipo: "Usuario" },
-    { codigo: 10, usuario: "usuario10", contrasena: "****", estado: "Activo", tipo: "Admin" },
-    { codigo: 11, usuario: "usuario11", contrasena: "****", estado: "Inactivo", tipo: "Usuario" },
-    { codigo: 12, usuario: "usuario12", contrasena: "****", estado: "Inactivo", tipo: "Usuario" },
-    { codigo: 13, usuario: "usuario13", contrasena: "****", estado: "Activo", tipo: "Admin" },
-    { codigo: 14, usuario: "usuario14", contrasena: "****", estado: "Inactivo", tipo: "Usuario" },
-    // Agrega más filas aquí si lo deseas
-  ];
+
+  const fetchUsers = async () => {
+    try {
+      const response = await axioInstance.get("/users/getUsers");
+      setData(response.data);
+    } catch (error) {
+      console.error("Error al obtener los usuarios:", error);
+    }
+  };
+  // Llamada al backend para obtener los usuarios
+  useEffect(() => {
+   
+
+    fetchUsers();
+  }, []);
 
   const filteredData = data.filter(row =>
-    row.usuario.toLowerCase().includes(searchTerm.toLowerCase())
+    row.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const totalRecords = filteredData.length;
@@ -45,6 +46,88 @@ function Tabla() {
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
+  };
+//funcion para cambiar el estado del uusario
+
+const handleEditStatus = async (userId) => {
+  // Mostrar confirmación antes de proceder
+  const result = await Swal.fire({
+    title: "¿Estás seguro?",
+    text: "¿Deseas cambiar el estado del usuario?",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#3085d6",
+    cancelButtonColor: "#d33",
+    confirmButtonText: "Sí, cambiar",
+    cancelButtonText: "Cancelar",
+  });
+
+  if (result.isConfirmed) {
+    try {
+      // Llamada al backend para cambiar el estado del usuario
+      await axioInstance.put(`/users/updateStatus/${userId}`);
+      
+      // Mostrar mensaje de éxito
+      Swal.fire({
+        title: "Cambiado",
+        text: "El estado del usuario ha sido cambiado correctamente.",
+        icon: "success",
+        confirmButtonColor: "#3085d6",
+      });
+      
+      // Recargar la lista de usuarios
+      fetchUsers();
+      
+    } catch (error) {
+      console.error("Error al cambiar el estado del usuario:", error);
+
+      // Mostrar mensaje de error
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: error.response?.data?.detail || "Hubo un error al cambiar el estado del usuario.",
+        confirmButtonColor: "#d33",
+      });
+    }
+  }
+};
+
+  
+
+  // Función para mostrar SweetAlert al presionar "ELIMINAR"
+  const handleDelete = (userId) => {
+    Swal.fire({
+      title: "¿Estás seguro?",
+      text: "Esta acción eliminará al usuario.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Sí, eliminar",
+      cancelButtonText: "Cancelar",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // Llamada al backend para eliminar el usuario
+        const deleteUser = async () => {
+          try {
+            await axioInstance.delete(`/users/deleteUser/${userId}`);
+          } catch (error) {
+            console.error("Error al eliminar el usuario:", error);
+          }
+        };
+
+        deleteUser();
+        // Lógica para eliminar el usuario
+        Swal.fire(
+          "Eliminado",
+          "El usuario ha sido eliminado correctamente.",
+          "success"
+        );
+
+        // Llamada al backend para obtener los usuarios actualizados
+        fetchUsers()
+      }
+    });
   };
 
   return (
@@ -71,12 +154,12 @@ function Tabla() {
           {currentData.map((row, index) => (
             <React.Fragment key={index}>
               <tr>
-                <td>{row.codigo}</td>
-                <td>{row.usuario}</td>
-                <td>{row.contrasena}</td>
-                <td>{row.estado}</td>
-                <td style={{ width: "10%" }}>
-                  <button className={styles.tableButton}>{row.tipo}</button>
+                <td>{row.id}</td>
+                <td>{row.name}</td>
+                <td>****</td>
+                <td>{row.Status}</td>
+                <td>
+                  <button className={styles.tableButton}>{row.typeUser}</button>
                 </td>
                 <td>
                   <IoIosMore
@@ -94,7 +177,12 @@ function Tabla() {
                 <tr>
                   <td colSpan="1" className={styles.submenu}>
                     <div className={styles.submenuOptions}>
-                      <button className={styles.botonEliminar}>ELIMINAR</button>
+                      <button
+                        className={styles.botonEliminar}
+                        onClick={() => handleDelete(row.id)} // Evento para eliminar
+                      >
+                        ELIMINAR
+                      </button>
                     </div>
                   </td>
                   <td colSpan="" className={styles.submenu}></td>
@@ -109,6 +197,7 @@ function Tabla() {
                             color: "#FF0000",
                             transition: "all 0.3s ease-in-out",
                           }}
+                          onClick={() => handleEditStatus(row.id)} // Evento para eliminar
                         />
                       </button>
                     </div>

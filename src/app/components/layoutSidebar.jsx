@@ -1,5 +1,6 @@
 'use client';
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";  // Importa useRouter para redirigir
 import Header from "./Header";
 import Sidebar from "./Sidebar";
 import Footer from "./Footer";
@@ -8,6 +9,16 @@ import styles from "./styles/Layout.module.css";
 
 function LayoutSidebar({ children }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const router = useRouter();  // Inicializa useRouter
+
+  // Verificación de la autenticación
+  useEffect(() => {
+    const username = localStorage.getItem('username');  // Obtiene el usuario del localStorage
+    
+    if (!username) {
+      router.push('/');  // Si no hay usuario, redirige al home
+    }
+  }, [router]);
 
   useEffect(() => {
     const savedState = JSON.parse(localStorage.getItem('sidebarOpen'));
@@ -38,7 +49,6 @@ function LayoutSidebar({ children }) {
         </main>
       </div>
 
-      {/* Footer con prop isOpen */}
       <Footer isOpen={isSidebarOpen} />
     </div>
   );
