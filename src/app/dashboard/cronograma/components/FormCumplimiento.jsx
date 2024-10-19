@@ -176,6 +176,7 @@ function FormCumplimiento() {
                 backgroundColor="#EE3333"
                 textColor="#FFFFFF"
                 style={{ width: "40%" }}
+                onClick={() => router.push("/dashboard/cronograma/grafica")}
               />
             </div>
           </div>

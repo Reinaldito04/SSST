@@ -11,13 +11,25 @@ function LayoutSidebar({ children }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const router = useRouter();  // Inicializa useRouter
 
-  // Verificación de la autenticación
+  // Verificación de la autenticación y rol
   useEffect(() => {
     const username = localStorage.getItem('username');  // Obtiene el usuario del localStorage
-    
+    const typeUser = localStorage.getItem('typeUser');  // Obtiene el tipo de usuario
+
+    // Verifica si el usuario está en la ruta '/dashboard/admin'
+    const currentPath = window.location.pathname;
+
     if (!username) {
-      router.push('/');  // Si no hay usuario, redirige al home
+      // Si no hay usuario, redirige al home
+      router.push('/');
+    } else if (
+      (currentPath === '/dashboard/administradores/consultar' || currentPath === '/dashboard/administradores/registrar')
+      && typeUser !== 'Administrador'
+    ) {
+      // Si el usuario no es administrador y está intentando acceder a cualquiera de estas rutas, redirige a /dashboard
+      router.push('/dashboard');
     }
+    
   }, [router]);
 
   useEffect(() => {

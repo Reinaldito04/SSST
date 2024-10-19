@@ -10,7 +10,9 @@ function Page() {
   ];
 
   const cardDataTop = [
-    { title: "Estatus", subtitle: "Ir al módulo",colorLine :'#EE3333',colorText:'#EE3333' },
+    { title: "Estatus", subtitle: "Ir al módulo",colorLine :'#EE3333',colorText:'#EE3333',
+      destiny : "estatus"
+     },
     { title: "Registrar", subtitle: "Ir al módulo" ,colorLine :'#161A6A',colorText:'#161A6A',
       destiny: 'registrar'
     },

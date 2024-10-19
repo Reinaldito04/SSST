@@ -137,6 +137,7 @@ function Tabla() {
           style={{
             width: "20%",
           }}
+          onClick={() => router.push("/dashboard/cronograma/grafica")}
         />
         <CustomButton
           label="Agregar"
