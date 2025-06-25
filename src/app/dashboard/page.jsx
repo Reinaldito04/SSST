@@ -3,11 +3,16 @@ import Layout from "../components/layoutSidebar";
 import CardDashboard from "./components/CardDarshboard";
 import GraficaCronograma from "./cronograma/components/GraficaCronograma";
 import GraficaEstatus from "./inspecciones/sistemaContraIncendios/components/GraficaEstatus";
-
+import CardWelcomeUser from "../components/CardWelcomeUser";
+import Administrador from "../assets/icon-admins.png";
+import clsx from "clsx";
+import Analista from "../assets/icon-empleados.png";
+import CardModule from "./components/CardModule";
+import { FaUsers, FaChartPie, FaFileAlt, FaCalendarCheck, FaCog , FaTasks} from "react-icons/fa";
 function Page() {
   return (
     <Layout>
-      <div className="container-fluid container ">
+      <div className="container-fluid container mt-2 ">
         <div className="row mx-auto">
           <div className="col-md-4 mb-4">
             <CardDashboard
@@ -25,51 +30,68 @@ function Page() {
           </div>
           <div className="col-md-4 mb-4">
             <CardDashboard
-              ruta="getDesviacionesCantidad"
-              title="Desviaciones detectadas"
-              subtitle="Procesadas / Cerradas"
+              ruta=""
+              title="Numeros de Casos "
+              subtitle="Casos registrados"
             />
           </div>
-          <div
-            className="col-md-12 card mb-4"
-            style={{
-              width: "100%",
-              margin: "0 auto",
-              boxShadow:
-                "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)",
-              backgroundColor: "#f8f9fa",
-              overflow: "hidden",
-            }}
-          >
-            <div className="card-body ">
-              <h5 className="card-title">
-              Cumplimiento de cronograma de inspecciones
-              </h5>
-            </div>
-            <div className="container">
-            <GraficaCronograma/>
-            </div>
-          </div>
-          <div
-            className="col-md-12 card "
-            style={{
-              width: "100%",
-              margin: "0 auto",
-              boxShadow:
-                "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)",
-              backgroundColor: "#f8f9fa",
-              overflow: "hidden",
-            }}
-          >
-            <div className="card-body ">
-              <h5 className="card-title">
-              Indicador de Sistemas contra Incendio
-              </h5>
-            </div>
-            <div className="container">
-            <GraficaEstatus/>
-            </div>
-          </div>
+       <div className="row g-4">
+        <div className="col-md-4 col-lg-4">
+          <CardModule
+            icon={<FaUsers />}
+            title="Usuarios"
+            description="Gestión de usuarios y permisos"
+            bgColor="bg-primary"
+          />
+        </div>
+        
+        <div className="col-md-4 col-lg-4">
+          <CardModule
+            icon={<FaChartPie />}
+            title="Reportes"
+            description="Generación de reportes estadísticos"
+            bgColor="bg-success"
+          />
+        </div>
+        
+
+         <div className="col-md-4 col-lg-4">
+          <CardModule
+            icon={<FaTasks />}
+            title="Casos"
+            description="Gestión de casos y seguimientos"
+            bgColor="bg-danger"
+          />
+        </div>
+        <div className="col-md-6 col-lg-4">
+          <CardModule
+            icon={<FaFileAlt />}
+            title="Documentos"
+            description="Administración de documentos"
+            bgColor="bg-info"
+          />
+        </div>
+        
+        <div className="col-md-6 col-lg-4">
+          <CardModule
+            icon={<FaCalendarCheck />}
+            title="Calendario"
+            description="Programación de actividades"
+            bgColor="bg-warning"
+            textColor="text-dark"
+          />
+        </div>
+        
+        <div className="col-md-6 col-lg-4">
+          <CardModule
+            icon={<FaCog />}
+            title="Configuración"
+            description="Ajustes del sistema"
+            bgColor="bg-secondary"
+          />
+        </div>
+      </div>
+        
         </div>
       </div>
     </Layout>

@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import styles from "./styles/Header.module.css";
 import { FaBars, FaUserCircle } from "react-icons/fa";
-import petropiar from "../assets/logopetropiar.JPG";
+import pdvsa from "../assets/pdvsa.png";
 import Image from "next/image";
 import { IoIosArrowDown } from "react-icons/io";
 import Link from "next/link";
@@ -37,7 +37,7 @@ function Header({ toggleSidebar }) {
         </div>
         <Link href="/dashboard">
           <div className={styles.logo}>
-            <Image src={petropiar} alt="Logo" width={200} height={50} />
+            <Image src={pdvsa} alt="Logo" width={200} height={50} />
           </div>
         </Link>
       </div>

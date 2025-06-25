@@ -36,7 +36,7 @@ function Page() {
                   marginLeft: "10px",
                 }}
               />
-              <h2 className="mb-0">Registrar Usuarios Administradores</h2>
+              <h2 className="mb-0">Registrar Usuarios </h2>
             </div>
           </div>
           <div

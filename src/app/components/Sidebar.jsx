@@ -94,24 +94,22 @@ function Sidebar({ isOpen }) {
             onClick={toggleMenu3}
             style={{ cursor: "pointer" }}
           >
-            <FaList size={25} /> Inspecciones
+            <FaList size={25} /> Plantas
             <span>{isOpenMenu3 ? "▼" : "►"}</span>
           </div>
           <ul className={clsx(styles.submenu, { [styles.open]: isOpenMenu3 })}>
             <li className="nav-item mb-2">
               <Link href="/dashboard/cronograma/registros" className="nav-link text-black">
-                Cronograma
+                Plantas
               </Link>
             </li>
             <li className="nav-item mb-2">
               <Link href="/subpage6" className="nav-link text-black">
-                SOL{" "}
-              </Link>
+Plantas              </Link>
             </li>
             <li className="nav-item mb-2">
               <Link href="/dashboard/inspecciones/sistemaContraIncendios" className="nav-link text-black">
-                Sistemas contra Incendio
-              </Link>
+Plantas              </Link>
             </li>
           </ul>
         </li>
@@ -122,7 +120,7 @@ function Sidebar({ isOpen }) {
             onClick={toggleMenu4}
             style={{ cursor: "pointer" }}
           >
-            <IoMdCheckmarkCircleOutline size={25} /> Formaciones
+            <IoMdCheckmarkCircleOutline size={25} /> Plantas
             <span>{isOpenMenu4 ? "▼" : "►"}</span>
           </div>
           <ul className={clsx(styles.submenu, { [styles.open]: isOpenMenu4 })}>
@@ -140,7 +138,7 @@ function Sidebar({ isOpen }) {
             onClick={toggleMenu5}
             style={{ cursor: "pointer" }}
           >
-            <FiHome size={25} /> Contratistas
+            <FiHome size={25} /> Plantas
             <span>{isOpenMenu5 ? "▼" : "►"}</span>
           </div>
           <ul className={clsx(styles.submenu, { [styles.open]: isOpenMenu5 })}>
@@ -167,33 +165,7 @@ function Sidebar({ isOpen }) {
           </ul>
         </li>
 
-        <li className={clsx(styles.navLink, "nav-item")}>
-          <div
-            className="nav-link text-black d-flex justify-content-between align-items-center"
-            onClick={toggleMenu6}
-            style={{ cursor: "pointer" }}
-          >
-            <IoGitBranchOutline size={25} /> Desviaciones
-            <span>{isOpenMenu6 ? "▼" : "►"}</span>
-          </div>
-          <ul className={clsx(styles.submenu, { [styles.open]: isOpenMenu6 })}>
-            <li className="nav-item mb-2">
-              <Link href="/dashboard/desviaciones/crear" className="nav-link text-black">
-                Registrar Desviaciones
-              </Link>
-            </li>
-            <li className="nav-item mb-2">
-              <Link href="/dashboard/desviaciones/consultar" className="nav-link text-black">
-                Consultar Desviaciones
-              </Link>
-            </li>
-            <li className="nav-item mb-2">
-              <Link href="/dashboard/desviaciones/estadisticas" className="nav-link text-black">
-                Estadistica Desviaciones
-              </Link>
-            </li>
-          </ul>
-        </li>
+        
       </ul>
     </div>
   );

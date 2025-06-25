@@ -12,25 +12,25 @@ function LayoutSidebar({ children }) {
   const router = useRouter();  // Inicializa useRouter
 
   // Verificación de la autenticación y rol
-  useEffect(() => {
-    const username = localStorage.getItem('username');  // Obtiene el usuario del localStorage
-    const typeUser = localStorage.getItem('typeUser');  // Obtiene el tipo de usuario
+  // useEffect(() => {
+  //   const username = localStorage.getItem('username');  // Obtiene el usuario del localStorage
+  //   const typeUser = localStorage.getItem('typeUser');  // Obtiene el tipo de usuario
 
-    // Verifica si el usuario está en la ruta '/dashboard/admin'
-    const currentPath = window.location.pathname;
+  //   // Verifica si el usuario está en la ruta '/dashboard/admin'
+  //   const currentPath = window.location.pathname;
 
-    if (!username) {
-      // Si no hay usuario, redirige al home
-      router.push('/');
-    } else if (
-      (currentPath === '/dashboard/administradores/consultar' || currentPath === '/dashboard/administradores/registrar')
-      && typeUser !== 'Administrador'
-    ) {
-      // Si el usuario no es administrador y está intentando acceder a cualquiera de estas rutas, redirige a /dashboard
-      router.push('/dashboard');
-    }
+  //   if (!username) {
+  //     // Si no hay usuario, redirige al home
+  //     router.push('/');
+  //   } else if (
+  //     (currentPath === '/dashboard/administradores/consultar' || currentPath === '/dashboard/administradores/registrar')
+  //     && typeUser !== 'Administrador'
+  //   ) {
+  //     // Si el usuario no es administrador y está intentando acceder a cualquiera de estas rutas, redirige a /dashboard
+  //     router.push('/dashboard');
+  //   }
     
-  }, [router]);
+  // }, [router]);
 
   useEffect(() => {
     const savedState = JSON.parse(localStorage.getItem('sidebarOpen'));
@@ -61,7 +61,7 @@ function LayoutSidebar({ children }) {
         </main>
       </div>
 
-      <Footer isOpen={isSidebarOpen} />
+      {/* <Footer isOpen={isSidebarOpen} /> */}
     </div>
   );
 }

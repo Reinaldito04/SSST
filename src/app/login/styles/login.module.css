@@ -1,40 +1,236 @@
-.buttonLogin{
-    background-color: #E33333;
-    color: white;
-    font-weight: bold;
-    padding: 25px;
-    border-radius: 15px;
+.mainContainer {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
 }
-.labelLogin{
-    color: #E33333;
-    margin-left:10px;
-    font-weight: bold;
+
+/* Sección del banner con imagen de fondo */
+.bannerSection {
+  flex: 1;
+  position: relative;
+  background-image: url('../../assets/loginbackground.jpeg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
-.body{
-    background: linear-gradient(to bottom, #a3a2a2, #3b3b3b);
+
+.backgroundOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 51, 102, 0.7); /* Overlay azul para mejor contraste */
+  z-index: 0;
 }
-.title{
-    text-wrap: balance;
-    
-    font-size: 35px;
-    font-weight: bold;
-    font-style: normal;
-    width: 60%;
-    margin: 0 auto;
+
+.bannerContent {
+  position: relative;
+  z-index: 1;
+  width: 80%;
+  color: white;
+  text-align: center;
 }
-.loginSection{
-    background-color: white;
-    height: 100dvh;
-    border-top-left-radius: 25px;
-    border-bottom-left-radius: 25px;
-}
-.registerlabel{
-    color: #E33333;
-    font-weight: bold;
-}
+
 .logoContainer {
-    position: absolute;
-    top: 20px;
-    left: 20px;
-    z-index: 10;
+  margin-bottom: 2rem;
+}
+
+.logoImage {
+}
+
+.title {
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+  line-height: 1.2;
+}
+
+.subtitle {
+  font-size: 1.2rem;
+  opacity: 0.9;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+  max-width: 80%;
+  margin: 0 auto;
+}
+
+/* Sección del formulario */
+.formSection {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: white;
+}
+
+.formContainer {
+  width: 100%;
+  max-width: 400px;
+  padding: 2rem;
+}
+
+.userIcon {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.labelLogin {
+  color: #E33333;
+  font-weight: bold;
+}
+
+.welcomeText {
+  text-align: center;
+  font-size: 1.8rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  color: #333;
+}
+
+.loginPrompt {
+  text-align: center;
+  color: #666;
+  margin-bottom: 2rem;
+  font-size: 1rem;
+}
+
+.loginForm {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.inputLabel {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 500;
+}
+
+.inputIcon {
+  font-size: 1.2rem;
+  color: #E33333;
+}
+
+.textInput {
+  padding: 0.8rem 1rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: all 0.3s;
+}
+
+.textInput:focus {
+  outline: none;
+  border-color: #E33333;
+  box-shadow: 0 0 0 2px rgba(227, 51, 51, 0.2);
+}
+
+.errorAlert {
+  padding: 0.8rem;
+  background-color: #ffeeee;
+  color: #cc0000;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+.buttonLogin {
+  background-color: #E33333;
+  color: white;
+  font-weight: bold;
+  padding: 15px;
+  border-radius: 15px;
+  border: none;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.buttonLogin:hover {
+  background-color: #c12a2a;
+}
+
+.buttonLogin:disabled {
+  background-color: #a3a2a2;
+  cursor: not-allowed;
+}
+
+.spinner {
+  width: 1.2rem;
+  height: 1.2rem;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: white;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.footerLinks {
+  margin-top: 2rem;
+  text-align: center;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.footerLink {
+  color: #E33333;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.footerLink:hover {
+  text-decoration: underline;
+}
+
+.linkSeparator {
+  margin: 0 0.5rem;
+  color: #ccc;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .mainContainer {
+    flex-direction: column;
   }
+  
+  .bannerSection {
+    padding: 2rem 1rem;
+    min-height: 40vh;
+  }
+  
+  .title {
+    font-size: 2rem;
+  }
+  
+  .subtitle {
+    font-size: 1rem;
+  }
+  
+  .formContainer {
+    padding: 1.5rem;
+  }
+  
+  .welcomeText {
+    font-size: 1.5rem;
+  }
+}
