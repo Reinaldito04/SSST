@@ -8,7 +8,9 @@ import Administrador from "../assets/icon-admins.png";
 import clsx from "clsx";
 import Analista from "../assets/icon-empleados.png";
 import CardModule from "./components/CardModule";
+import HasPermission from "../components/HasPermission";
 import { FaUsers, FaChartPie, FaFileAlt, FaCalendarCheck, FaCog , FaTasks} from "react-icons/fa";
+import { redirect } from "next/navigation";
 function Page() {
   return (
     <Layout>
@@ -36,17 +38,23 @@ function Page() {
             />
           </div>
        <div className="row g-4">
-        <div className="col-md-4 col-lg-4">
+
+        <HasPermission permissionName={'users-browse'}>
+ <div className="col-md-4 col-lg-4">
           <CardModule
+          href={"/dashboard/administradores/consultar"}
             icon={<FaUsers />}
             title="Usuarios"
             description="Gestión de usuarios y permisos"
             bgColor="bg-primary"
           />
         </div>
+        </HasPermission>
+       
         
         <div className="col-md-4 col-lg-4">
           <CardModule
+
             icon={<FaChartPie />}
             title="Reportes"
             description="Generación de reportes estadísticos"
@@ -66,8 +74,8 @@ function Page() {
         <div className="col-md-6 col-lg-4">
           <CardModule
             icon={<FaFileAlt />}
-            title="Documentos"
-            description="Administración de documentos"
+            title="Departamentos"
+            description="Gestión de departamentos"
             bgColor="bg-info"
           />
         </div>

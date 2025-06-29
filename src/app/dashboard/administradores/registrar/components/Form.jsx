@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import InputField from "./InputField"; // Ajusta la ruta según tu estructura
 import CustomButton from "@/app/components/CustomBotton";
 import { axioInstance } from "@/app/utils/axioInstance";
@@ -9,14 +9,27 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 function Form() {
+  const [roles,setRoles]=useState([])
+  useEffect(() => {
+    const fetchRoles = async () => {
+      try {
+        const response = await axioInstance.get("/roles");
+        setRoles(response.data.data);
+      } catch (error) {
+        console.error("Error al obtener los roles:", error);
+      }
+    };
+    fetchRoles();
+  }, []);
+
   const MySwal = withReactContent(Swal);
   const [data, setData] = useState({
     name: "",
     typeUser: "",
     password: "",
-    UID: "",
-    Code: "",
     Status: "",
+    mail: "",
+    passwordrepeat: "",
   });
 
   const estadoOpcions = [
@@ -24,10 +37,10 @@ function Form() {
     { value: "Inactivo", label: "Inactivo" },
   ];
 
-  const tipoUsuario = [
-    { value: "Administrador", label: "Administrador" },
-    { value: "Analista", label: "Analista" },
-  ];
+  const tipoUsuario = roles.map((rol) => ({
+    value: rol.id,
+    label: rol.display_name,
+  }));
 
   const handleSubmit = async (e) => {
     e.preventDefault(); // Prevenir el comportamiento predeterminado de envío del formulario
@@ -47,7 +60,7 @@ function Form() {
     }
 
     if (data.name === "" || data.typeUser === "" || data.password === "" || 
-      data.UID === "" || data.Code === "" || data.Status === ""
+      data.Status === "" || data.mail === "" || data.passwordrepeat === ""
       
      ) {
       toast.error("Por favor complete todos los campos", {
@@ -63,16 +76,22 @@ function Form() {
     }
     else{
       try {
-        const response = await axioInstance.post("/users/addUser", data);
+        const response = await axioInstance.post("/users", {
+          name: data.name,
+          email: data.mail,
+          role_id: data.typeUser,
+          password: data.password,
+          password_confirmation: data.passwordrepeat,
+        });
         console.log(response.data);
   
         setData({
           name: "",
           typeUser: "",
           password: "",
-          UID: "",
-          Code: "",
           Status: "",
+          mail: "",
+          passwordrepeat: "",
         });
   
         MySwal.fire({
@@ -81,8 +100,9 @@ function Form() {
           confirmButtonText: "OK",
         });
       } catch (error) {
+        let errorMessage = error.response.data.message;
         MySwal.fire({
-          title: "Error al registrar el usuario",
+          title: errorMessage || "Error al registrar el usuario",
           icon: "error",
           confirmButtonText: "OK",
         });
@@ -96,22 +116,14 @@ function Form() {
     <form onSubmit={handleSubmit}>
       <ToastContainer position="top-right" autoClose={5000} />
       <div className="row">
-        <div className="col-md-6">
+       
+       <div className="col-md-6">
           <InputField
-            label="Ingrese el ID Usuario"
+            label="Ingrese el correo del Usuario"
             type="text"
-            placeholder="Por favor ingrese ID Usuario..."
-            value={data.UID}
-            onChange={(e) => setData({ ...data, UID: e.target.value })}
-          />
-        </div>
-        <div className="col-md-6">
-          <InputField
-            label="Ingrese el código del Usuario"
-            type="text"
-            placeholder="Por favor ingrese Código Usuario..."
-            value={data.Code}
-            onChange={(e) => setData({ ...data, Code: e.target.value })}
+            placeholder="Por favor ingrese Correo..."
+            value={data.mail}
+            onChange={(e) => setData({ ...data, mail: e.target.value })}
           />
         </div>
         <div className="col-md-6">
@@ -130,6 +142,15 @@ function Form() {
             placeholder="Por favor ingrese Contraseña Usuario..."
             value={data.password}
             onChange={(e) => setData({ ...data, password: e.target.value })}
+          />
+        </div>
+        <div className="col-md-6">
+          <InputField
+            label="Ingrese la contraseña de nuevo"
+            type="password"
+            placeholder="Por favor ingrese Contraseña Usuario..."
+            value={data.passwordrepeat}
+            onChange={(e) => setData({ ...data, passwordrepeat: e.target.value })}
           />
         </div>
         <div className="col-md-6">

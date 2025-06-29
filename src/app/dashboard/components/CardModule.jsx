@@ -1,16 +1,27 @@
+"use client"
+
 import React from "react";
 import PropTypes from "prop-types";
+import { useRouter } from "next/navigation";
 
-const CardModule = ({ icon, title, description, bgColor, textColor, onClick }) => {
+const CardModule = ({ icon, title, description, bgColor, textColor, href }) => {
+  const router = useRouter();
+  
   // Colores predeterminados si no se especifican
   const backgroundColor = bgColor || "bg-primary";
   const color = textColor || "text-white";
-  
+
+  const handleClick = () => {
+    if (href) {
+      router.push(href); // Navegación programática con useRouter
+    }
+  };
+
   return (
     <div 
       className={`card shadow-sm h-100 transition-all hover-effect ${backgroundColor} ${color}`}
-      onClick={onClick}
-      style={{ cursor: onClick ? "pointer" : "default" }}
+      onClick={handleClick}
+      style={{ cursor: href ? "pointer" : "default" }}
     >
       <div className="card-body text-center p-4">
         <div className="mb-3">
@@ -31,7 +42,7 @@ CardModule.propTypes = {
   description: PropTypes.string.isRequired,
   bgColor: PropTypes.string,
   textColor: PropTypes.string,
-  onClick: PropTypes.func,
+  href: PropTypes.string, // Añadido para la prop href
 };
 
 export default CardModule;

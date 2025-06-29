@@ -8,6 +8,7 @@ import loginBackground from "../assets/loginbackground.jpeg";
 import styles from "./styles/login.module.css";
 import { useSearchParams, useRouter } from "next/navigation";
 import { axioInstance } from "../utils/axioInstance";
+import { useUserStore } from "../store/userStore";
 
 function FormLogin() {
   const [username, setUsername] = useState("");
@@ -16,6 +17,7 @@ function FormLogin() {
   const [error, setError] = useState(null);
   const router = useRouter();
   const searchParams = useSearchParams();
+  const {setUser} = useUserStore();
 
   const capitalizeFirstLetter = (string) => {
     if (!string) return "";
@@ -45,6 +47,7 @@ function FormLogin() {
         console.log('Login exitoso:', response.data);
         localStorage.setItem('username', response.data.user.name);
         localStorage.setItem('token', response.data.token);
+        setUser(response.data.user);  
         // localStorage.setItem('typeUser', response.data.typeUser);
         router.push('/dashboard');
       }
@@ -52,11 +55,7 @@ function FormLogin() {
       console.error("Error en el login:", error);
       let errorMessage = "Error en el login. Verifica tus credenciales";
       if (error.response) {
-        if (Array.isArray(error.response.data?.detail)) {
-          errorMessage = error.response.data.detail[0]?.msg || errorMessage;
-        } else {
-          errorMessage = error.response.data?.detail || errorMessage;
-        }
+        errorMessage = error.response.data.message;
       }
       setError(errorMessage);
     } finally {

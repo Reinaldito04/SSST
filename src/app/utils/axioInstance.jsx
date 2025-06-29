@@ -1,4 +1,3 @@
-
 import axios from "axios";
 
 export const axioInstance = axios.create({
@@ -7,5 +6,6 @@ export const axioInstance = axios.create({
     headers: {
         "Accept": "application/json",
         "Content-Type": "application/json",
+        "Authorization": `Bearer ${localStorage.getItem('token')}`,
     },
 })

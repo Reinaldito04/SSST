@@ -5,96 +5,68 @@ import styles from "../styles/Tabla.module.css";
 import { IoIosMore } from "react-icons/io";
 import { FaRegTrashAlt } from "react-icons/fa";
 import { axioInstance } from "@/app/utils/axioInstance";
-import Swal from "sweetalert2"; // Importar SweetAlert2
-
+import Swal from "sweetalert2";
+import { useRouter } from "next/navigation";
+import HasPermission from "@/app/components/HasPermission";
 function Tabla() {
   const [activeRow, setActiveRow] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
-  const [data, setData] = useState([]); // Estado para los datos de usuarios
-  const itemsPerPage = 5;
-
-
-  const fetchUsers = async () => {
+  const [users, setUsers] = useState([]); // Usuarios
+  const [meta, setMeta] = useState({ total: 0, per_page: 10 }); // Datos de paginación
+  const router = useRouter();
+  const fetchUsers = async (page = 1) => {
     try {
-      const response = await axioInstance.get("/users/getUsers");
-      setData(response.data);
+      const response = await axioInstance.get(`/users?page=${page}`);
+      const { data, total, per_page } = response.data;
+      setUsers(data);
+      setMeta({ total, per_page });
     } catch (error) {
       console.error("Error al obtener los usuarios:", error);
     }
   };
-  // Llamada al backend para obtener los usuarios
+
   useEffect(() => {
-   
-
-    fetchUsers();
-  }, []);
-
-  const filteredData = data.filter(row =>
-    row.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
-  const totalRecords = filteredData.length;
-  const totalPages = Math.ceil(totalRecords / itemsPerPage);
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  const currentData = filteredData.slice(startIndex, endIndex);
+    fetchUsers(currentPage);
+  }, [currentPage]);
 
   const toggleSubmenu = (index) => {
     setActiveRow(activeRow === index ? null : index);
   };
 
   const handlePageChange = (page) => {
+    if (page < 1 || page > Math.ceil(meta.total / meta.per_page)) return;
     setCurrentPage(page);
   };
-//funcion para cambiar el estado del uusario
 
-const handleEditStatus = async (userId) => {
-  // Mostrar confirmación antes de proceder
-  const result = await Swal.fire({
-    title: "¿Estás seguro?",
-    text: "¿Deseas cambiar el estado del usuario?",
-    icon: "warning",
-    showCancelButton: true,
-    confirmButtonColor: "#3085d6",
-    cancelButtonColor: "#d33",
-    confirmButtonText: "Sí, cambiar",
-    cancelButtonText: "Cancelar",
-  });
+  const handleEditStatus = async (userId) => {
+    const result = await Swal.fire({
+      title: "¿Estás seguro?",
+      text: "¿Deseas cambiar el estado del usuario?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Sí, cambiar",
+      cancelButtonText: "Cancelar",
+    });
 
-  if (result.isConfirmed) {
-    try {
-      // Llamada al backend para cambiar el estado del usuario
-      await axioInstance.put(`/users/updateStatus/${userId}`);
-      
-      // Mostrar mensaje de éxito
-      Swal.fire({
-        title: "Cambiado",
-        text: "El estado del usuario ha sido cambiado correctamente.",
-        icon: "success",
-        confirmButtonColor: "#3085d6",
-      });
-      
-      // Recargar la lista de usuarios
-      fetchUsers();
-      
-    } catch (error) {
-      console.error("Error al cambiar el estado del usuario:", error);
-
-      // Mostrar mensaje de error
-      Swal.fire({
-        icon: "error",
-        title: "Error",
-        text: error.response?.data?.detail || "Hubo un error al cambiar el estado del usuario.",
-        confirmButtonColor: "#d33",
-      });
+    if (result.isConfirmed) {
+      try {
+        await axioInstance.put(`/users/updateStatus/${userId}`);
+        Swal.fire(
+          "Cambiado",
+          "El estado del usuario ha sido cambiado.",
+          "success"
+        );
+        fetchUsers(currentPage);
+      } catch (error) {
+        console.error("Error al cambiar el estado del usuario:", error);
+        Swal.fire("Error", "Hubo un error al cambiar el estado.", "error");
+      }
     }
-  }
-};
+  };
 
-  
-
-  // Función para mostrar SweetAlert al presionar "ELIMINAR"
   const handleDelete = (userId) => {
     Swal.fire({
       title: "¿Estás seguro?",
@@ -107,38 +79,22 @@ const handleEditStatus = async (userId) => {
       cancelButtonText: "Cancelar",
     }).then((result) => {
       if (result.isConfirmed) {
-        // Llamada al backend para eliminar el usuario
         const deleteUser = async () => {
           try {
-            await axioInstance.delete(`/users/deleteUser/${userId}`);
+            await axioInstance.delete(`/users/${userId}`);
+            Swal.fire("Eliminado", "El usuario ha sido eliminado.", "success");
+            fetchUsers(currentPage);
           } catch (error) {
             console.error("Error al eliminar el usuario:", error);
           }
         };
-
         deleteUser();
-        // Lógica para eliminar el usuario
-        Swal.fire(
-          "Eliminado",
-          "El usuario ha sido eliminado correctamente.",
-          "success"
-        );
-
-        // Llamada al backend para obtener los usuarios actualizados
-        fetchUsers()
       }
     });
   };
 
   return (
     <div className={styles.tableContainer}>
-      <input
-        type="text"
-        placeholder="Buscar usuario..."
-        className={styles.searchInput}
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-      />
       <table className={styles.table}>
         <thead>
           <tr>
@@ -151,15 +107,17 @@ const handleEditStatus = async (userId) => {
           </tr>
         </thead>
         <tbody>
-          {currentData.map((row, index) => (
-            <React.Fragment key={index}>
+          {users.map((row, index) => (
+            <React.Fragment key={row.id}>
               <tr>
                 <td>{row.id}</td>
                 <td>{row.name}</td>
                 <td>****</td>
-                <td>{row.Status}</td>
+                <td>{row.email_verified_at ? "Activo" : "Inactivo"}</td>
                 <td>
-                  <button className={styles.tableButton}>{row.typeUser}</button>
+                  <button className={styles.tableButton}>
+                    {row.roles?.[0]?.display_name || "Sin rol"}
+                  </button>
                 </td>
                 <td>
                   <IoIosMore
@@ -175,31 +133,15 @@ const handleEditStatus = async (userId) => {
               </tr>
               {activeRow === index && (
                 <tr>
-                  <td colSpan="1" className={styles.submenu}>
+                  <td colSpan="6" className={styles.submenu}>
                     <div className={styles.submenuOptions}>
                       <button
                         className={styles.botonEliminar}
-                        onClick={() => handleDelete(row.id)} // Evento para eliminar
+                        onClick={() => handleDelete(row.id)}
                       >
-                        ELIMINAR
+                        <FaRegTrashAlt size={20} color="#FF0000" />
                       </button>
-                    </div>
-                  </td>
-                  <td colSpan="" className={styles.submenu}></td>
-                  <td colSpan="1" className={styles.submenu}></td>
-                  <td colSpan="1" className={styles.submenu}>
-                    <div className={styles.submenuOptions}>
-                      <button className={styles.botonEliminar}>
-                        <FaRegTrashAlt
-                          size={40}
-                          style={{
-                            cursor: "pointer",
-                            color: "#FF0000",
-                            transition: "all 0.3s ease-in-out",
-                          }}
-                          onClick={() => handleEditStatus(row.id)} // Evento para eliminar
-                        />
-                      </button>
+                     
                     </div>
                   </td>
                 </tr>
@@ -208,9 +150,25 @@ const handleEditStatus = async (userId) => {
           ))}
         </tbody>
       </table>
-      <div className={styles.recordCount}>
-        Visualizando {startIndex + 1} a {endIndex} de {totalRecords} registros.
+
+      <div className="d-flex justify-content-between">
+        <div className={styles.recordCount}>
+          Visualizando {users.length} de {meta.total} registros.
+        </div>
+        <HasPermission permissionName='users-add'>
+          <div>
+            <button
+              className="btn btn-primary mt-2"
+              onClick={() =>
+                router.push("/dashboard/administradores/registrar")
+              }
+            >
+              Agregar
+            </button>
+          </div>
+        </HasPermission>
       </div>
+
       <div className={styles.pagination}>
         <button
           onClick={() => handlePageChange(currentPage - 1)}
@@ -218,10 +176,10 @@ const handleEditStatus = async (userId) => {
         >
           Anterior
         </button>
-        <button className={styles.currentPage}>{currentPage}</button>
+        <span className={styles.currentPage}>{currentPage}</span>
         <button
           onClick={() => handlePageChange(currentPage + 1)}
-          disabled={currentPage === totalPages}
+          disabled={currentPage === Math.ceil(meta.total / meta.per_page)}
         >
           Siguiente
         </button>
