@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import { axioInstance } from "@/app/utils/axioInstance";
+import { axioInstance } from "../../utils/axioInstance";
 
 function CardDashboard({ title, subtitle, ruta }) {
   const [data, setData] = useState({ cantidad: 0 }); // Inicializa data con una propiedad cantidad

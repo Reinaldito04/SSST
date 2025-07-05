@@ -1,8 +1,8 @@
 "use client";
 import React, { useState,useEffect } from "react";
 import InputField from "./InputField"; // Ajusta la ruta según tu estructura
-import CustomButton from "@/app/components/CustomBotton";
-import { axioInstance } from "@/app/utils/axioInstance";
+import CustomButton from "../../../../components/CustomBotton";
+import { axioInstance } from "../../../../utils/axioInstance";
 import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
 import { ToastContainer, toast } from "react-toastify";

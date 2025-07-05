@@ -6,7 +6,7 @@ import CustomButton from "../../../../components/CustomBotton";
 import { axioInstance } from "../../../../utils/axioInstance";
 import { useRouter } from "next/navigation";
 import Loading from "../../../../components/Loading";
-import EditDepartmentModal from "./EditDepartmentModal"; // Importa el nuevo componente
+import EditAreaModal from "./EditAreaModal"; // Importa el nuevo componente
 function Tabla() {
   const router = useRouter();
   const [activeRow, setActiveRow] = useState(null);
@@ -16,14 +16,14 @@ function Tabla() {
   const [loading, setLoading] = useState(true);
    const [error, setError] = useState(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [selectedDepartment, setSelectedDepartment] = useState(null);
+  const [selectedArea, setselectedArea] = useState(null);
   const itemsPerPage = 5;
 
   // useEffect para obtener los datos del endpoint
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axioInstance.get("/departments");
+        const response = await axioInstance.get("/areas");
         setData(response.data.data); // Accedemos a response.data.data que contiene el array de departamentos
         setLoading(false);
       } catch (err) {
@@ -55,17 +55,17 @@ function Tabla() {
 
   if (loading) return <Loading />;
   if (error) return <p>{error}</p>;
-  const handleEdit = (department) => {
-    setSelectedDepartment(department);
+  const handleEdit = (area) => {
+    setselectedArea(area);
     setIsEditModalOpen(true);
-    console.log('Editando departamento:', department);
+    console.log('Editando area:', area);
   };
 
 
-  const handleUpdate = (updatedDepartment) => {
+  const handleUpdate = (updatedArea) => {
     setData((prevData) =>
-      prevData.map((dept) =>
-        dept.id === updatedDepartment.id ? updatedDepartment : dept
+      prevData.map((area) =>
+        area.id === updatedArea.id ? updatedArea : area
       )
     );
   };
@@ -73,7 +73,7 @@ function Tabla() {
     <div className={styles.tableContainer}>
       <input
         type="text"
-        placeholder="Buscar departamento..."
+        placeholder="Buscar area..."
         className={styles.searchInput}
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
@@ -112,10 +112,10 @@ function Tabla() {
           ))}
         </tbody>
       </table>
- <EditDepartmentModal
+ <EditAreaModal
         isOpen={isEditModalOpen}
         onRequestClose={() => setIsEditModalOpen(false)}
-        department={selectedDepartment}
+        area={selectedArea}
         onUpdate={handleUpdate}
       />
 
@@ -125,8 +125,8 @@ function Tabla() {
           {totalRecords} registros.
         </div>
         <CustomButton
-          label="Crear departamento"
-          onClick={() => router.push("/dashboard/departamentos/crear")}
+          label="Crear area"
+          onClick={() => router.push("/dashboard/areas/crear")}
         />
       </div>
 

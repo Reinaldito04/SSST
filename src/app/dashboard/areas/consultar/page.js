@@ -12,11 +12,11 @@ function page() {
       link: "/dashboard",
     },
     {
-      label: "Departamentos",
-      link: "/dashboard/departamentos",
+      label: "Areas",
+      link: "/dashboard/areas",
     },
     {
-      label: "Consultar Departamentos",
+      label: "Consultar Areas",
       link: "",
     },
   ];
@@ -50,11 +50,13 @@ function page() {
       <div className="container mt-4">
         <div className={clsx(styles.headerContainer)}>
           <FiDatabase size={40} className={styles.headerIcon} />
-          <h2 className={styles.title}>Listado Completo de Departamentos</h2>
+          <h2 className={styles.title}>Listado Completo de 
+            Areas
+          </h2>
         </div>
       </div>
       <div className={clsx(styles.contenedorPage, "container")}>
-        <h4>Consultar Departamentos</h4>
+        <h4>Consultar Areas</h4>
         <p className={clsx(styles.parrafo, "text-muted")}>
           Estimado usuario(a), a continuación se muestra en pantalla el listado
           completo de registros que usted ha deseado consultar en el mismo,

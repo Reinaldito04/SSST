@@ -4,10 +4,10 @@ import React, { useState, useEffect } from "react";
 import styles from "../styles/Tabla.module.css";
 import { IoIosMore } from "react-icons/io";
 import { FaRegTrashAlt } from "react-icons/fa";
-import { axioInstance } from "@/app/utils/axioInstance";
+import { axioInstance } from "../../../../utils/axioInstance";
 import Swal from "sweetalert2";
 import { useRouter } from "next/navigation";
-import HasPermission from "@/app/components/HasPermission";
+import HasPermission from "../../../../components/HasPermission";
 function Tabla() {
   const [activeRow, setActiveRow] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);

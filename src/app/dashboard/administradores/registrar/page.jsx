@@ -1,5 +1,5 @@
-import LayoutSidebar from "@/app/components/layoutSidebar";
-import UrlRow from "@/app/components/urlRow";
+import LayoutSidebar from "../../../components/layoutSidebar";
+import UrlRow from "../../../components/urlRow";
 import { CiCirclePlus } from "react-icons/ci";
 import AlertMessage from "./components/alertRegister";
 import clsx from "clsx";

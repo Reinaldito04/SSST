@@ -1,5 +1,5 @@
-import LayoutSidebar from '@/app/components/layoutSidebar';
-import UrlRow from '@/app/components/urlRow';
+import LayoutSidebar from '../../../components/layoutSidebar';
+import UrlRow from '../../../components/urlRow';
 import { RiCheckboxIndeterminateFill } from "react-icons/ri"; 
 import clsx from 'clsx';
 import Tabla from './components/tableConsult';

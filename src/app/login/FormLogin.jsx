@@ -1,6 +1,6 @@
 "use client";
 import clsx from "clsx";
-import { useState, useCallback } from "react";
+import { useState, useCallback, Suspense } from "react";
 import { CiUser, CiLock } from "react-icons/ci";
 import Image from "next/image";
 import pdvsa from "../assets/pdvsa.png";
@@ -10,6 +10,16 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { axioInstance } from "../utils/axioInstance";
 import { useUserStore } from "../store/userStore";
 
+// Componente principal que envuelve el formulario en Suspense
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<div className={styles.loadingContainer}>Cargando formulario...</div>}>
+      <FormLogin />
+    </Suspense>
+  );
+}
+
+// Componente del formulario de login
 function FormLogin() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -17,20 +27,24 @@ function FormLogin() {
   const [error, setError] = useState(null);
   const router = useRouter();
   const searchParams = useSearchParams();
-  const {setUser} = useUserStore();
+  const { setUser } = useUserStore();
 
+  // Función para capitalizar la primera letra
   const capitalizeFirstLetter = (string) => {
     if (!string) return "";
     return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
   };
 
+  // Obtener el tipo de usuario de los parámetros de búsqueda
   const type = searchParams.get("Type");
   const formattedType = type ? capitalizeFirstLetter(type) : null;
 
+  // Manejador de envío del formulario
   const handleSubmit = useCallback(async (e) => {
     e.preventDefault();
     setError(null);
     
+    // Validación de campos vacíos
     if (!username.trim() || !password.trim()) {
       setError("Por favor complete todos los campos");
       return;
@@ -38,30 +52,34 @@ function FormLogin() {
 
     try {
       setLoading(true);
+      // Llamada a la API de login
       const response = await axioInstance.post("/sanctum/login", {
         email: username.trim(),
         password: password.trim(),
       });
 
       if (response.data) {
-        console.log('Login exitoso:', response.data);
-        localStorage.setItem('username', response.data.user.name);
-        localStorage.setItem('token', response.data.token);
-        setUser(response.data.user);  
-        // localStorage.setItem('typeUser', response.data.typeUser);
-        router.push('/dashboard');
+        // Guardar datos en localStorage solo en el cliente
+        if (typeof window !== "undefined") {
+          localStorage.setItem("username", response.data.user.name);
+          localStorage.setItem("token", response.data.token);
+        }
+        // Actualizar estado global del usuario
+        setUser(response.data.user);
+        // Redirigir al dashboard
+        router.push("/dashboard");
       }
     } catch (error) {
       console.error("Error en el login:", error);
       let errorMessage = "Error en el login. Verifica tus credenciales";
       if (error.response) {
-        errorMessage = error.response.data.message;
+        errorMessage = error.response.data.message || errorMessage;
       }
       setError(errorMessage);
     } finally {
       setLoading(false);
     }
-  }, [username, password, router]);
+  }, [username, password, router, setUser]); // Dependencias del useCallback
 
   return (
     <div className={styles.mainContainer}>
@@ -72,7 +90,7 @@ function FormLogin() {
           <div className={styles.logoContainer}>
             <Image 
               src={pdvsa} 
-              alt="Logo pdvsas" 
+              alt="Logo PDVSA" 
               width={280} 
               height={100}
               priority
@@ -93,16 +111,21 @@ function FormLogin() {
             <CiUser size={48} className={styles.labelLogin} />
           </div>
           
-          <h3 className={styles.welcomeText}>Bienvenido{formattedType ? `, ${formattedType}` : ''}</h3>
+          <h3 className={styles.welcomeText}>
+            Bienvenido{formattedType ? `, ${formattedType}` : ""}
+          </h3>
           <p className={styles.loginPrompt}>Por favor ingrese sus credenciales</p>
           
+          {/* Mensaje de error */}
           {error && (
             <div className={styles.errorAlert} role="alert">
               {error}
             </div>
           )}
           
+          {/* Formulario */}
           <form onSubmit={handleSubmit} className={styles.loginForm}>
+            {/* Campo de usuario */}
             <div className={styles.inputGroup}>
               <label htmlFor="username" className={styles.inputLabel}>
                 <CiUser className={styles.inputIcon} />
@@ -119,6 +142,7 @@ function FormLogin() {
               />
             </div>
             
+            {/* Campo de contraseña */}
             <div className={styles.inputGroup}>
               <label htmlFor="password" className={styles.inputLabel}>
                 <CiLock className={styles.inputIcon} />
@@ -135,10 +159,13 @@ function FormLogin() {
               />
             </div>
             
+            {/* Botón de submit */}
             <button
               type="submit"
               disabled={loading}
-              className={styles.buttonLogin}
+              className={clsx(styles.buttonLogin, {
+                [styles.buttonLoading]: loading,
+              })}
             >
               {loading ? (
                 <>
@@ -149,6 +176,7 @@ function FormLogin() {
             </button>
           </form>
           
+          {/* Enlaces de pie de página */}
           <div className={styles.footerLinks}>
             <a href="#" className={styles.footerLink}>¿Problemas para ingresar?</a>
             <span className={styles.linkSeparator}>|</span>
@@ -159,5 +187,3 @@ function FormLogin() {
     </div>
   );
 }
-
-export default FormLogin;
