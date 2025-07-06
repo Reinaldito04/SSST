@@ -1,28 +1,63 @@
 "use client";
-import React, { useState } from "react";
-import InputField from "../../../administradores/registrar/components/InputField";
-import CustomButton from "../../../../components/CustomBotton";
-import { axioInstance } from "../../../../utils/axioInstance";
+import React, { useState, useEffect } from "react";
+import InputField from "../../../../../administradores/registrar/components/InputField";
+import CustomButton from "../../../../../../components/CustomBotton";
+import { axioInstance } from "../../../../../../utils/axioInstance";
 import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-function Form() {
+function SectorForm() {
   const MySwal = withReactContent(Swal);
   const [data, setData] = useState({
     name: "",
     display_name: "",
     description: "",
-    active: true, // Valor por defecto como activo
+    active: true,
+    plant_id: "" // Campo para vincular con la planta
   });
+
+  const [plants, setPlants] = useState([]);
+  const [loadingPlants, setLoadingPlants] = useState(true);
+
+  // Cargar las plantas disponibles al montar el componente
+  useEffect(() => {
+    const fetchPlants = async () => {
+      try {
+        const response = await axioInstance.get("/plants");
+        setPlants(response.data.data);
+        setLoadingPlants(false);
+      } catch (error) {
+        console.error("Error al cargar las plantas:", error);
+        setLoadingPlants(false);
+        toast.error("Error al cargar las plantas disponibles", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        });
+      }
+    };
+
+    fetchPlants();
+  }, []);
+
+  const PlantasOptions = plants.map((plant) => ({
+    value: plant.id,
+    label: `${plant.display_name} (${plant.area?.display_name || plant.area_name})`
+  }));
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     // Validación de campos requeridos
-    if (data.name === "" || data.display_name === "") {
-      toast.error("Por favor complete los campos obligatorios", {
+    if (data.name === "" || data.display_name === "" || !data.plant_id) {
+      toast.error("Por favor complete todos los campos obligatorios", {
         position: "top-right",
         autoClose: 5000,
         hideProgressBar: false,
@@ -36,11 +71,12 @@ function Form() {
     }
 
     try {
-      const response = await axioInstance.post("/areas", {
+      const response = await axioInstance.post("/sectors", {
         name: data.name,
         display_name: data.display_name,
         description: data.description,
         active: data.active,
+        plant_id: data.plant_id
       });
 
       // Limpiar formulario después del éxito
@@ -49,15 +85,16 @@ function Form() {
         display_name: "",
         description: "",
         active: true,
+        plant_id: ""
       });
 
       MySwal.fire({
-        title: "area creada con éxito",
+        title: "Sector creado con éxito",
         icon: "success",
         confirmButtonText: "OK",
       });
     } catch (error) {
-      let errorMessage = error.response?.data?.message || "Error al registrar la area";
+      let errorMessage = error.response?.data?.message || "Error al registrar el sector";
       MySwal.fire({
         title: errorMessage,
         icon: "error",
@@ -72,9 +109,9 @@ function Form() {
       <div className="row">
         <div className="col-md-6">
           <InputField
-            label="Nombre de la Area*"
+            label="Nombre del Sector*"
             type="text"
-            placeholder="Ej: area de TI"
+            placeholder="Ej: control de calidad"
             value={data.name}
             onChange={(e) => setData({ ...data, name: e.target.value })}
             required
@@ -84,26 +121,40 @@ function Form() {
           <InputField
             label="Nombre para Mostrar*"
             type="text"
-            placeholder="Ej: Departamento de TI"
+            placeholder="Ej: Sector de Control de Calidad"
             value={data.display_name}
             onChange={(e) => setData({ ...data, display_name: e.target.value })}
             required
           />
         </div>
-        <div className="col-md-12">
+        
+        <div className="col-md-6">
+          <InputField
+            label="Planta"
+            type="select"
+            placeholder="Seleccione la planta..."
+            options={PlantasOptions}
+            value={data.plant_id}
+            onChange={(e) => setData({ ...data, plant_id: e.target.value })}
+          />
+        </div>
+        
+       
+        
+        <div className="col-md-6">
           <InputField
             label="Descripción"
             type="text"
-            placeholder="Ej: Area encargada de la tecnología..."
+            placeholder="Ej: Sector encargado del control de calidad de los productos..."
             value={data.description}
             onChange={(e) => setData({ ...data, description: e.target.value })}
           />
         </div>
-       
       </div>
+      
       <div style={{ marginTop: "20px" }}>
         <CustomButton
-          label="Registrar Area"
+          label="Registrar Sector"
           backgroundColor="#EE3333"
           textColor="#ffffff"
           type="submit"
@@ -118,6 +169,7 @@ function Form() {
               display_name: "",
               description: "",
               active: true,
+              plant_id: ""
             });
           }}
           style={{ marginLeft: "15px" }}
@@ -127,4 +179,4 @@ function Form() {
   );
 }
 
-export default Form;
+export default SectorForm;

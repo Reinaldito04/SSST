@@ -1,15 +1,17 @@
-import LayoutSidebar from "../../../components/layoutSidebar";
-import UrlRow from "../../../components/urlRow";
+import LayoutSidebar from "../../../../../components/layoutSidebar";
+import UrlRow from "../../../../../components/urlRow";
 import { CiCirclePlus } from "react-icons/ci";
-import AlertMessage from "../../administradores/registrar/components/alertRegister";
+import AlertMessage from "../../../../administradores/registrar/components/alertRegister";
 import clsx from "clsx";
 import styles from "./styles/registrarPage.module.css";
-import Form from "./components/Form";
+import SectorForm from "./components/Form";
 function Page() {
   const breadcrumbs = [
     { label: "Inicio", link: "/dashboard" },
     { label: "Areas", link: "/dashboard/areas" },
-    { label: "Registrar nueva area", link: "" },
+    { label: "Plantas", link: "/dashboard/areas/plantas" },
+    { label: "Sectores", link: "/dashboard/areas/plantas/sectores" },
+    { label: "Registrar nuevo sector", link: "" },
   ];
 
   return (
@@ -36,7 +38,7 @@ function Page() {
                   marginLeft: "10px",
                 }}
               />
-              <h2 className="mb-0">Registrar Area </h2>
+              <h2 className="mb-0">Registrar Sector </h2>
             </div>
           </div>
           <div
@@ -45,7 +47,7 @@ function Page() {
           >
             <div className="container-fluid">
               <AlertMessage />
-              <Form />
+              <SectorForm />
             </div>
           </div>
         </div>

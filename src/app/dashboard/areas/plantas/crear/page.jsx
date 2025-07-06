@@ -1,7 +1,7 @@
-import LayoutSidebar from "../../../components/layoutSidebar";
-import UrlRow from "../../../components/urlRow";
+import LayoutSidebar from "../../../../components/layoutSidebar";
+import UrlRow from "../../../../components/urlRow";
 import { CiCirclePlus } from "react-icons/ci";
-import AlertMessage from "../../administradores/registrar/components/alertRegister";
+import AlertMessage from "../../../administradores/registrar/components/alertRegister";
 import clsx from "clsx";
 import styles from "./styles/registrarPage.module.css";
 import Form from "./components/Form";
@@ -9,7 +9,8 @@ function Page() {
   const breadcrumbs = [
     { label: "Inicio", link: "/dashboard" },
     { label: "Areas", link: "/dashboard/areas" },
-    { label: "Registrar nueva area", link: "" },
+    { label: "Plantas", link: "/dashboard/areas/plantas" },
+    { label: "Registrar nueva planta", link: "" },
   ];
 
   return (
@@ -36,7 +37,7 @@ function Page() {
                   marginLeft: "10px",
                 }}
               />
-              <h2 className="mb-0">Registrar Area </h2>
+              <h2 className="mb-0">Registrar Planta </h2>
             </div>
           </div>
           <div
