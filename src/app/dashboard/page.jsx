@@ -16,7 +16,6 @@ function Page() {
     <Layout>
       <div className="container-fluid container mt-2 ">
         <div className="row mx-auto">
-        
           <div className="row g-4">
             <HasPermission permissionName={"users-browse"}>
               <div className="col-md-4 col-lg-4">
@@ -47,24 +46,30 @@ function Page() {
                 bgColor="bg-danger"
               />
             </div>
-            <div className="col-md-6 col-lg-4">
-              <CardModule
-                icon={<FaFileAlt />}
-                href={"/dashboard/departamentos/consultar"}
-                title="Departamentos"
-                description="Gestión de departamentos"
-                bgColor="bg-info"
-              />
-            </div>
-   <div className="col-md-6 col-lg-4">
-              <CardModule
-                icon={<FaFileAlt />}
-                href={"/dashboard/areas/consultar"}
-                title="Areas"
-                description="Gestión de areas"
-                bgColor="bg-success"
-              />
-            </div>
+            <HasPermission permissionName={"departments-browse"}>
+              <div className="col-md-6 col-lg-4">
+                <CardModule
+                  icon={<FaFileAlt />}
+                  href={"/dashboard/departamentos/consultar"}
+                  title="Departamentos"
+                  description="Gestión de departamentos"
+                  bgColor="bg-info"
+                />
+              </div>
+            </HasPermission>
+
+            <HasPermission permissionName={"areas-browse"}>
+              <div className="col-md-6 col-lg-4">
+                <CardModule
+                  icon={<FaFileAlt />}
+                  href={"/dashboard/areas/consultar"}
+                  title="Areas"
+                  description="Gestión de areas"
+                  bgColor="bg-success"
+                />
+              </div>
+            </HasPermission>
+
             <div className="col-md-6 col-lg-4">
               <CardModule
                 icon={<FaCalendarCheck />}

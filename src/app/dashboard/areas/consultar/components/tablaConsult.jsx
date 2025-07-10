@@ -124,10 +124,18 @@ function Tabla() {
           Visualizando {startIndex + 1} a {Math.min(endIndex, totalRecords)} de{" "}
           {totalRecords} registros.
         </div>
-        <CustomButton
+
+        <div className="d-flex gap-2">
+  <CustomButton
           label="Crear area"
           onClick={() => router.push("/dashboard/areas/crear")}
         />
+          <CustomButton
+          label="Plantas"
+          onClick={() => router.push("/dashboard/areas/plantas/consultar")}
+        />
+        </div>
+      
       </div>
 
       <div className={styles.pagination}>

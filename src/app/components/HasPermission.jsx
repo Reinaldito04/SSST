@@ -12,7 +12,7 @@ const HasPermission = ({  permissionName, children }) => {
   // Verificar si el permiso existe en el array de permisos
   const hasPermission = permissions.some(
     permission => permission.name === permissionName
-  );
+  );  
 
   // Si no tiene el permiso, retornar null o false según lo necesites
   if (!hasPermission) {

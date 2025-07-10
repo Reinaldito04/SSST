@@ -1,6 +1,7 @@
 'use client';
 
 import axios from "axios";
+import Swal from 'sweetalert2'; // Asegúrate de tener sweetalert2 instalado
 
 // Crear instancia base sin el token
 export const axioInstance = axios.create({
@@ -14,7 +15,6 @@ export const axioInstance = axios.create({
 
 // Interceptor para añadir el token dinámicamente
 axioInstance.interceptors.request.use((config) => {
-  // Solo ejecutar en el cliente
   if (typeof window !== 'undefined') {
     const token = localStorage.getItem('token');
     if (token) {
@@ -25,3 +25,23 @@ axioInstance.interceptors.request.use((config) => {
 }, (error) => {
   return Promise.reject(error);
 });
+
+// Interceptor de respuesta para manejar errores como 403
+axioInstance.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response && error.response.status === 403) {
+      if (typeof window !== 'undefined') {
+        Swal.fire({
+          icon: 'error',
+          title: 'Acceso denegado',
+          text: 'No tienes permisos para realizar esta acción.',
+          
+        }).then(() => {
+          window.location.href = '/dashboard';
+        });
+      }
+    }
+    return Promise.reject(error);
+  }
+);
