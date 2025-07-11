@@ -83,6 +83,8 @@ function Tabla() {
         name: formData.name,
         email: formData.email,
         password: formData.password || undefined,
+        password_confirmation	: formData.password || undefined,
+
         status: formData.status === "activo" ? 1 : 0,
       });
       Swal.fire("Éxito", "Usuario actualizado correctamente", "success");
@@ -90,7 +92,7 @@ function Tabla() {
       fetchUsers(currentPage);
     } catch (error) {
       console.error("Error al actualizar usuario:", error);
-      Swal.fire("Error", "No se pudo actualizar el usuario", "error");
+      Swal.fire("Error", error.response.data.message || "Error al actualizar el usuario", "error");
     }
   };
 
@@ -163,7 +165,7 @@ function Tabla() {
                         <FaRegTrashAlt size={18} color="#dc3545" />
                       </button>
                       <button
-                        className={styles.botonEditar}
+                        className={styles.botonEliminar}
                         onClick={() => handleEditUser(row)}
                         title="Editar usuario"
                       >
@@ -261,23 +263,7 @@ function Tabla() {
             <label htmlFor="passwordInput">Contraseña (opcional)</label>
           </div>
 
-          <div className="form-floating mb-4">
-            <select
-              className="form-select"
-              id="roleSelect"
-              value={formData.role}
-              onChange={(e) =>
-                setFormData({ ...formData, role: e.target.value })
-              }
-            >
-              {roles.map((role) => (
-                <option key={role.id} value={role.id}>
-                  {role.display_name}
-                </option>
-              ))}
-            </select>
-            <label htmlFor="statusSelect">Rol</label>
-          </div>
+         
 
           <div className="form-floating mb-4">
             <select

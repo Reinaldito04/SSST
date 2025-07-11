@@ -7,6 +7,8 @@ import { axioInstance } from "../../../../utils/axioInstance";
 import { useRouter } from "next/navigation";
 import Loading from "../../../../components/Loading";
 import EditDepartmentModal from "./EditDepartmentModal"; // Importa el nuevo componente
+import HasPermission from "../../../../components/HasPermission";
+import Swal from "sweetalert2";
 function Tabla() {
   const router = useRouter();
   const [activeRow, setActiveRow] = useState(null);
@@ -14,7 +16,7 @@ function Tabla() {
   const [searchTerm, setSearchTerm] = useState("");
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
-   const [error, setError] = useState(null);
+  const [error, setError] = useState(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedDepartment, setSelectedDepartment] = useState(null);
   const itemsPerPage = 5;
@@ -58,9 +60,39 @@ function Tabla() {
   const handleEdit = (department) => {
     setSelectedDepartment(department);
     setIsEditModalOpen(true);
-    console.log('Editando departamento:', department);
+    console.log("Editando departamento:", department);
   };
 
+  const handleDelete = (departmentId) => {
+    // Llamada a la API para eliminar el departamento
+    Swal.fire({
+      title: "Eliminar departamento",
+      text: "¿Estas seguro de eliminar el departamento?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Si, eliminar",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        axioInstance
+          .delete(`/departments/${departmentId}`)
+          .then((response) => {
+            console.log("Departamento eliminado:", response.data);
+            Swal.fire(
+              "Eliminado",
+              "El departamento ha sido eliminado.",
+              "success"
+            );
+            // Actualizar la lista de departamentos después de la eliminación
+            setData((prevData) =>
+              prevData.filter((dept) => dept.id !== departmentId)
+            );
+          })
+          .catch((error) => {
+            console.error("Error al eliminar el departamento:", error);
+          });
+      }
+    });
+  };
 
   const handleUpdate = (updatedDepartment) => {
     setData((prevData) =>
@@ -87,7 +119,7 @@ function Tabla() {
             <th>Estado</th>
             <th>Creado</th>
             <th>Actualizado</th>
-                        <th>Acciones</th>
+            <th>Acciones</th>
           </tr>
         </thead>
         <tbody>
@@ -100,19 +132,30 @@ function Tabla() {
               <td>{new Date(row.created_at).toLocaleDateString()}</td>
               <td>{new Date(row.updated_at).toLocaleDateString()}</td>
 
-               <td>
-                <button 
-                  onClick={() => handleEdit(row)}
-                  className="btn btn-primary"
-                >
-                  Editar
+              <td>
+                <HasPermission permissionName="departments-edit">
+                  <button
+                    onClick={() => handleEdit(row)}
+                    className="btn btn-primary"
+                  >
+                    Editar
+                  </button>
+                </HasPermission>
+                <HasPermission permissionName="departments-delete">
+
+                <button
+                  onClick={() => handleDelete(row.id)}
+                  className="btn btn-danger"
+                  >
+                  Eliminar
                 </button>
+                  </HasPermission>
               </td>
             </tr>
           ))}
         </tbody>
       </table>
- <EditDepartmentModal
+      <EditDepartmentModal
         isOpen={isEditModalOpen}
         onRequestClose={() => setIsEditModalOpen(false)}
         department={selectedDepartment}
@@ -124,10 +167,13 @@ function Tabla() {
           Visualizando {startIndex + 1} a {Math.min(endIndex, totalRecords)} de{" "}
           {totalRecords} registros.
         </div>
-        <CustomButton
+        <HasPermission permissionName={"departments-add"}>
+  <CustomButton
           label="Crear departamento"
           onClick={() => router.push("/dashboard/departamentos/crear")}
         />
+        </HasPermission>
+      
       </div>
 
       <div className={styles.pagination}>
