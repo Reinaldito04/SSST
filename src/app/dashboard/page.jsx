@@ -71,6 +71,18 @@ function Page() {
             </HasPermission>
 
            
+            <HasPermission permissionName={"articles-browse"}>
+              <div className="col-md-6 col-lg-4">
+                <CardModule
+                  icon={<FaFileAlt />}
+                  href={"/dashboard/articulos/consultar"}
+                  title="Articulos"
+                  description="Gestión de articulos"
+                  bgColor="bg-danger"
+                />
+              </div>
+            </HasPermission>
+
 
             
           </div>

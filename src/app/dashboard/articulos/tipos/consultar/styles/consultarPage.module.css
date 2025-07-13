@@ -1,0 +1,31 @@
+.headerContainer {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    margin-top: 20px;
+    margin-left: 20px;
+}
+.headerIcon {
+    color: black;
+    margin-right: 10px;
+}
+.contenedorPage {
+    background-color: #f8f9fa;
+    padding: 20px ;
+    
+    border-radius: 10px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    margin-top: 20px;
+    width: 95%;
+    margin: 0 auto;
+}
+
+.parrafo{
+    text-wrap: balance;
+    margin-top: 10px;
+    margin-bottom: 20px;
+    font-size: 18px;
+    line-height: 1.5;
+    color: #333;
+    
+}
