@@ -21,7 +21,7 @@ function Form() {
     e.preventDefault();
 
     // Validación de campos requeridos
-    if (data.name === "" || data.display_name === "") {
+    if (data.name === "" || data.description === "") {
       toast.error("Por favor complete los campos obligatorios", {
         position: "top-right",
         autoClose: 5000,
@@ -38,7 +38,7 @@ function Form() {
     try {
       const response = await axioInstance.post("/areas", {
         name: data.name,
-        display_name: data.display_name,
+        display_name: data.name.replace(/\s+/g, '-').toLowerCase(),
         description: data.description,
         active: data.active,
       });
@@ -80,17 +80,8 @@ function Form() {
             required
           />
         </div>
+        
         <div className="col-md-6">
-          <InputField
-            label="Nombre para Mostrar*"
-            type="text"
-            placeholder="Ej: Departamento de TI"
-            value={data.display_name}
-            onChange={(e) => setData({ ...data, display_name: e.target.value })}
-            required
-          />
-        </div>
-        <div className="col-md-12">
           <InputField
             label="Descripción"
             type="text"

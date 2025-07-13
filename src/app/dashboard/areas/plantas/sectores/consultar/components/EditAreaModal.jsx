@@ -101,7 +101,7 @@ function EditAreaModal({ isOpen, onRequestClose, area, onUpdate }) {
           >
             <h5 className="modal-title fw-bold">
               <i className="bi bi-pencil-square me-2"></i>
-              Editar Area
+              Editar Sector
             </h5>
             <button
               type="button"
@@ -123,7 +123,7 @@ function EditAreaModal({ isOpen, onRequestClose, area, onUpdate }) {
             <form onSubmit={handleSubmit}>
               {/* Campo Nombre */}
               <div className="mb-4">
-                <label htmlFor="display_name" className="form-label fw-semibold">
+                <label htmlFor="name" className="form-label fw-semibold">
                   <i className="bi bi-building me-2 text-primary"></i>
                   Nombre del sector
                 </label>
@@ -134,9 +134,9 @@ function EditAreaModal({ isOpen, onRequestClose, area, onUpdate }) {
                   <input
                     type="text"
                     className="form-control form-control-lg"
-                    id="display_name"
-                    name="display_name"
-                    value={formData.display_name}
+                    id="name"
+                    name="name"
+                    value={formData.name}
                     onChange={handleChange}
                     required
                     placeholder="Ej: Recursos Humanos"

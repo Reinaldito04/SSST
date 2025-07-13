@@ -6,10 +6,10 @@ import CustomButton from "../../../../../components/CustomBotton";
 import { axioInstance } from "../../../../../utils/axioInstance";
 import { useRouter } from "next/navigation";
 import Loading from "../../../../../components/Loading";
-import EditAreaModal from "./EditAreaModal"; // Importa el nuevo componente
+import EditAreaModal from "./EditAreaModal";
+
 function Tabla() {
   const router = useRouter();
-  const [activeRow, setActiveRow] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
   const [data, setData] = useState([]);
@@ -17,14 +17,26 @@ function Tabla() {
   const [error, setError] = useState(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedArea, setselectedArea] = useState(null);
-  const itemsPerPage = 5;
+  const [pagination, setPagination] = useState({
+    total: 0,
+    per_page: 5,
+    current_page: 1,
+    last_page: 1,
+  });
 
-  // useEffect para obtener los datos del endpoint
+  // useEffect para obtener los datos del endpoint con paginación
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axioInstance.get("/plants");
-        setData(response.data.data); // Accedemos a response.data.data que contiene el array de departamentos
+        setLoading(true);
+        const response = await axioInstance.get(`/plants?page=${currentPage}&search_input=${searchTerm}`);
+        setData(response.data.data);
+        setPagination({
+          total: response.data.total,
+          per_page: response.data.per_page,
+          current_page: response.data.current_page,
+          last_page: response.data.last_page,
+        });
         setLoading(false);
       } catch (err) {
         setError("Error al obtener los datos");
@@ -32,29 +44,14 @@ function Tabla() {
       }
     };
 
-    fetchData();
-  }, []);
+    // Debounce para evitar muchas peticiones al escribir
+    const debounceTimer = setTimeout(() => {
+      fetchData();
+    }, 500);
 
-  // Filtrar los datos según el término de búsqueda
-  const filteredData = data.filter(
-    (row) =>
-      row.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      row.display_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      row.description.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+    return () => clearTimeout(debounceTimer);
+  }, [currentPage, searchTerm]);
 
-  const totalRecords = filteredData.length;
-  const totalPages = Math.ceil(totalRecords / itemsPerPage);
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  const currentData = filteredData.slice(startIndex, endIndex);
-
-  const handlePageChange = (page) => {
-    setCurrentPage(page);
-  };
-
-  if (loading) return <Loading />;
-  if (error) return <p>{error}</p>;
   const handleEdit = (area) => {
     setselectedArea(area);
     setIsEditModalOpen(true);
@@ -77,6 +74,10 @@ function Tabla() {
     };
     return new Date(dateString).toLocaleDateString("es-ES", options);
   };
+
+  if (loading) return <Loading />;
+  if (error) return <p>{error}</p>;
+
   return (
     <div className={styles.tableContainer}>
       <input
@@ -99,8 +100,8 @@ function Tabla() {
           </tr>
         </thead>
         <tbody>
-          {currentData.length > 0 ? (
-            currentData.map((row) => (
+          {data.length > 0 ? (
+            data.map((row) => (
               <tr key={row.id} className={styles.tableRow}>
                 <td className={styles.idColumn}>{row.id}</td>
                 <td>
@@ -108,7 +109,7 @@ function Tabla() {
                     <span className={styles.displayName}>
                       {row.display_name}
                     </span>
-                    </div>
+                  </div>
                 </td>
                 <td>{row.area?.display_name || row.area_name}</td>
                 <td className={styles.descriptionCell}>{row.description}</td>
@@ -124,7 +125,6 @@ function Tabla() {
                 <td className={styles.dateCell}>
                   {formatDate(row.created_at)}
                 </td>
-
                 <td>
                   <button
                     onClick={() => handleEdit(row)}
@@ -144,6 +144,7 @@ function Tabla() {
           )}
         </tbody>
       </table>
+      
       <EditAreaModal
         isOpen={isEditModalOpen}
         onRequestClose={() => setIsEditModalOpen(false)}
@@ -153,34 +154,34 @@ function Tabla() {
 
       <div className="d-flex justify-content-between mt-2">
         <div className={styles.recordCount}>
-          Visualizando {startIndex + 1} a {Math.min(endIndex, totalRecords)} de{" "}
-          {totalRecords} registros.
+          Mostrando {((pagination.current_page - 1) * pagination.per_page) + 1} a{' '}
+          {Math.min(pagination.current_page * pagination.per_page, pagination.total)} de{' '}
+          {pagination.total} registros.
         </div>
-        <div className='d-flex gap-2  '>
-
-        <CustomButton
-          label="Crear planta"
-          onClick={() => router.push("/dashboard/areas/plantas/crear")}
-        />
+        
+        <div className='d-flex gap-2'>
           <CustomButton
-          label="Sectores"
-          onClick={() => router.push("/dashboard/areas/plantas/sectores/consultar")}
-        />
+            label="Crear planta"
+            onClick={() => router.push("/dashboard/areas/plantas/crear")}
+          />
+          <CustomButton
+            label="Sectores"
+            onClick={() => router.push("/dashboard/areas/plantas/sectores/consultar")}
+          />
         </div>
-
       </div>
 
       <div className={styles.pagination}>
         <button
-          onClick={() => handlePageChange(currentPage - 1)}
+          onClick={() => setCurrentPage(currentPage - 1)}
           disabled={currentPage === 1}
         >
           Anterior
         </button>
         <button className={styles.currentPage}>{currentPage}</button>
         <button
-          onClick={() => handlePageChange(currentPage + 1)}
-          disabled={currentPage === totalPages}
+          onClick={() => setCurrentPage(currentPage + 1)}
+          disabled={currentPage === pagination.last_page}
         >
           Siguiente
         </button>

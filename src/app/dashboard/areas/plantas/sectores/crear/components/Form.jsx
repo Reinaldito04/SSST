@@ -56,7 +56,7 @@ function SectorForm() {
     e.preventDefault();
 
     // Validación de campos requeridos
-    if (data.name === "" || data.display_name === "" || !data.plant_id) {
+    if (data.name === ""  || !data.plant_id) {
       toast.error("Por favor complete todos los campos obligatorios", {
         position: "top-right",
         autoClose: 5000,
@@ -73,7 +73,7 @@ function SectorForm() {
     try {
       const response = await axioInstance.post("/sectors", {
         name: data.name,
-        display_name: data.display_name,
+        display_name: data.name.replace(/\s+/g, '-').toLowerCase(),
         description: data.description,
         active: data.active,
         plant_id: data.plant_id
@@ -117,16 +117,7 @@ function SectorForm() {
             required
           />
         </div>
-        <div className="col-md-6">
-          <InputField
-            label="Nombre para Mostrar*"
-            type="text"
-            placeholder="Ej: Sector de Control de Calidad"
-            value={data.display_name}
-            onChange={(e) => setData({ ...data, display_name: e.target.value })}
-            required
-          />
-        </div>
+        
         
         <div className="col-md-6">
           <InputField

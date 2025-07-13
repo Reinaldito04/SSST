@@ -70,24 +70,9 @@ function Page() {
               </div>
             </HasPermission>
 
-            <div className="col-md-6 col-lg-4">
-              <CardModule
-                icon={<FaCalendarCheck />}
-                title="Calendario"
-                description="Programación de actividades"
-                bgColor="bg-warning"
-                textColor="text-dark"
-              />
-            </div>
+           
 
-            <div className="col-md-6 col-lg-4">
-              <CardModule
-                icon={<FaCog />}
-                title="Configuración"
-                description="Ajustes del sistema"
-                bgColor="bg-secondary"
-              />
-            </div>
+            
           </div>
         </div>
       </div>

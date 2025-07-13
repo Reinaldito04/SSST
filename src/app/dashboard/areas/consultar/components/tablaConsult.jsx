@@ -6,7 +6,9 @@ import CustomButton from "../../../../components/CustomBotton";
 import { axioInstance } from "../../../../utils/axioInstance";
 import { useRouter } from "next/navigation";
 import Loading from "../../../../components/Loading";
-import EditAreaModal from "./EditAreaModal"; // Importa el nuevo componente
+import EditAreaModal from "./EditAreaModal";
+import HasPermission from "../../../../components/HasPermission";
+import Swal from "sweetalert2";
 function Tabla() {
   const router = useRouter();
   const [activeRow, setActiveRow] = useState(null);
@@ -14,17 +16,31 @@ function Tabla() {
   const [searchTerm, setSearchTerm] = useState("");
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
-   const [error, setError] = useState(null);
+  const [error, setError] = useState(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedArea, setselectedArea] = useState(null);
-  const itemsPerPage = 5;
+  const [pagination, setPagination] = useState({
+    total: 0,
+    per_page: 5,
+    current_page: 1,
+    last_page: 1,
+  });
 
-  // useEffect para obtener los datos del endpoint
+  // useEffect para obtener los datos del endpoint con paginación
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axioInstance.get("/areas");
-        setData(response.data.data); // Accedemos a response.data.data que contiene el array de departamentos
+        setLoading(true);
+        const response = await axioInstance.get(
+          `/areas?page=${currentPage}&search_input=${searchTerm}`
+        );
+        setData(response.data.data);
+        setPagination({
+          total: response.data.total,
+          per_page: response.data.per_page,
+          current_page: response.data.current_page,
+          last_page: response.data.last_page,
+        });
         setLoading(false);
       } catch (err) {
         setError("Error al obtener los datos");
@@ -32,43 +48,64 @@ function Tabla() {
       }
     };
 
-    fetchData();
-  }, []);
+    // Agregamos un debounce para evitar hacer muchas peticiones al escribir
+    const debounceTimer = setTimeout(() => {
+      fetchData();
+    }, 500);
 
-  // Filtrar los datos según el término de búsqueda
-  const filteredData = data.filter(
-    (row) =>
-      row.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      row.display_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      row.description.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+    return () => clearTimeout(debounceTimer);
+  }, [currentPage, searchTerm]);
 
-  const totalRecords = filteredData.length;
-  const totalPages = Math.ceil(totalRecords / itemsPerPage);
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  const currentData = filteredData.slice(startIndex, endIndex);
+  const handleEdit = (area) => {
+    setselectedArea(area);
+    setIsEditModalOpen(true);
+    console.log("Editando area:", area);
+  };
 
-  const handlePageChange = (page) => {
-    setCurrentPage(page);
+  const handleUpdate = (updatedArea) => {
+    setData((prevData) =>
+      prevData.map((area) => (area.id === updatedArea.id ? updatedArea : area))
+    );
+  };
+  const handleDelete = (areaId) => {
+    Swal.fire({
+      title: "¿Estás seguro?",
+      text: "Estaacción eliminará al area.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Si, eliminar",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        axioInstance
+          .delete(`/areas/${areaId}`)
+          .then((response) => {
+            Swal.fire("Eliminado!", "", "success");
+            setData((prevData) =>
+              prevData.filter((area) => area.id !== areaId)
+            );
+          })
+          .catch((error) => {
+            console.error("Error al eliminar el area:", error);
+          });
+      }
+    });
+  };
+
+  const formatDate = (dateString) => {
+    return new Date(dateString).toLocaleDateString("es-ES", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
   };
 
   if (loading) return <Loading />;
   if (error) return <p>{error}</p>;
-  const handleEdit = (area) => {
-    setselectedArea(area);
-    setIsEditModalOpen(true);
-    console.log('Editando area:', area);
-  };
 
-
-  const handleUpdate = (updatedArea) => {
-    setData((prevData) =>
-      prevData.map((area) =>
-        area.id === updatedArea.id ? updatedArea : area
-      )
-    );
-  };
   return (
     <div className={styles.tableContainer}>
       <input
@@ -87,32 +124,59 @@ function Tabla() {
             <th>Estado</th>
             <th>Creado</th>
             <th>Actualizado</th>
-                        <th>Acciones</th>
+            <th>Acciones</th>
           </tr>
         </thead>
         <tbody>
-          {currentData.map((row) => (
-            <tr key={row.id}>
-              <td>{row.id}</td>
-              <td>{row.display_name}</td>
-              <td>{row.description}</td>
-              <td>{row.active ? "Activo" : "Inactivo"}</td>
-              <td>{new Date(row.created_at).toLocaleDateString()}</td>
-              <td>{new Date(row.updated_at).toLocaleDateString()}</td>
+          {data.length > 0 ? (
+            data.map((row) => (
+              <tr key={row.id}>
+                <td>{row.id}</td>
+                <td>{row.display_name}</td>
+                <td>{row.description}</td>
+                <td>
+                  <span
+                    className={`${styles.statusBadge} ${
+                      row.active ? styles.active : styles.inactive
+                    }`}
+                  >
+                    {row.active ? "Activo" : "Inactivo"}
+                  </span>
+                </td>
+                <td>{formatDate(row.created_at)}</td>
+                <td>{formatDate(row.updated_at)}</td>
+                <td>
+                  <HasPermission permissionName={"areas-edit"}>
+                    <button
+                      onClick={() => handleEdit(row)}
+                      className="btn btn-primary"
+                    >
+                      Editar
+                    </button>
+                  </HasPermission>
 
-               <td>
-                <button 
-                  onClick={() => handleEdit(row)}
-                  className="btn btn-primary"
-                >
-                  Editar
-                </button>
+                  <HasPermission permissionName={"areas-delete"}>
+                    <button
+                      className="btn btn-danger"
+                      onClick={() => handleDelete(row.id)}
+                    >
+                      Eliminar
+                    </button>
+                  </HasPermission>
+                </td>
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td colSpan="7" className={styles.noData}>
+                No se encontraron áreas
               </td>
             </tr>
-          ))}
+          )}
         </tbody>
       </table>
- <EditAreaModal
+
+      <EditAreaModal
         isOpen={isEditModalOpen}
         onRequestClose={() => setIsEditModalOpen(false)}
         area={selectedArea}
@@ -121,34 +185,37 @@ function Tabla() {
 
       <div className="d-flex justify-content-between mt-2">
         <div className={styles.recordCount}>
-          Visualizando {startIndex + 1} a {Math.min(endIndex, totalRecords)} de{" "}
-          {totalRecords} registros.
+          Mostrando {(pagination.current_page - 1) * pagination.per_page + 1} a{" "}
+          {Math.min(
+            pagination.current_page * pagination.per_page,
+            pagination.total
+          )}{" "}
+          de {pagination.total} registros.
         </div>
 
         <div className="d-flex gap-2">
-  <CustomButton
-          label="Crear area"
-          onClick={() => router.push("/dashboard/areas/crear")}
-        />
           <CustomButton
-          label="Plantas"
-          onClick={() => router.push("/dashboard/areas/plantas/consultar")}
-        />
+            label="Crear area"
+            onClick={() => router.push("/dashboard/areas/crear")}
+          />
+          <CustomButton
+            label="Plantas"
+            onClick={() => router.push("/dashboard/areas/plantas/consultar")}
+          />
         </div>
-      
       </div>
 
       <div className={styles.pagination}>
         <button
-          onClick={() => handlePageChange(currentPage - 1)}
+          onClick={() => setCurrentPage(currentPage - 1)}
           disabled={currentPage === 1}
         >
           Anterior
         </button>
         <button className={styles.currentPage}>{currentPage}</button>
         <button
-          onClick={() => handlePageChange(currentPage + 1)}
-          disabled={currentPage === totalPages}
+          onClick={() => setCurrentPage(currentPage + 1)}
+          disabled={currentPage === pagination.last_page}
         >
           Siguiente
         </button>
