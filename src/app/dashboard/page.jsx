@@ -84,7 +84,29 @@ function Page() {
             </HasPermission>
 
 
-            
+            <HasPermission permissionName={"iers-browse"}>
+              <div className="col-md-6 col-lg-4">
+                <CardModule
+                  icon={<FaFileAlt />}
+                  href={"/dashboard/ier/consultar"}
+                  title="IER"
+                  description="Gestión de IER"
+                  bgColor="bg-danger"
+                />
+              </div>
+            </HasPermission>
+
+            <HasPermission permissionName={"tasks-browse"}>
+              <div className="col-md-6 col-lg-4">
+                <CardModule
+                  icon={<FaFileAlt />}
+                  href={"/dashboard/tareas/consultar"}
+                  title="Tareas"
+                  description="Gestión de Tareas"
+                  bgColor="bg-info"
+                />
+              </div>
+            </HasPermission>
           </div>
         </div>
       </div>

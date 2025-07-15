@@ -6,12 +6,12 @@ import CustomButton from "../../../../components/CustomBotton";
 import { axioInstance } from "../../../../utils/axioInstance";
 import { useRouter } from "next/navigation";
 import Loading from "../../../../components/Loading";
-import EditDepartmentModal from "./EditDepartmentModal"; // Importa el nuevo componente
+import EditDepartmentModal from "./EditDepartmentModal";
 import HasPermission from "../../../../components/HasPermission";
 import Swal from "sweetalert2";
+
 function Tabla() {
   const router = useRouter();
-  const [activeRow, setActiveRow] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
   const [data, setData] = useState([]);
@@ -19,88 +19,98 @@ function Tabla() {
   const [error, setError] = useState(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedDepartment, setSelectedDepartment] = useState(null);
-  const itemsPerPage = 5;
+  const [pagination, setPagination] = useState({
+    total: 0,
+    per_page: 5,
+    current_page: 1,
+    last_page: 1,
+  });
 
-  // useEffect para obtener los datos del endpoint
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axioInstance.get("/departments");
-        setData(response.data.data); // Accedemos a response.data.data que contiene el array de departamentos
-        setLoading(false);
-      } catch (err) {
-        setError("Error al obtener los datos");
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, []);
-
-  // Filtrar los datos según el término de búsqueda
-  const filteredData = data.filter(
-    (row) =>
-      row.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      row.display_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      row.description.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
-  const totalRecords = filteredData.length;
-  const totalPages = Math.ceil(totalRecords / itemsPerPage);
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  const currentData = filteredData.slice(startIndex, endIndex);
-
-  const handlePageChange = (page) => {
-    setCurrentPage(page);
+  // Función para obtener datos con paginación
+  const fetchData = async (page = 1, search = "") => {
+    setLoading(true);
+    try {
+      const response = await axioInstance.get(
+        `/departments?page=${page}&per_page=${pagination.per_page}&search_input=${search}`
+      );
+      
+      setData(response.data.data);
+      setPagination({
+        total: response.data.total,
+        per_page: response.data.per_page,
+        current_page: response.data.current_page,
+        last_page: response.data.last_page,
+      });
+      setError(null);
+    } catch (err) {
+      setError("Error al obtener los datos");
+      console.error("Error fetching data:", err);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  if (loading) return <Loading />;
-  if (error) return <p>{error}</p>;
+  // Efecto para cargar datos iniciales y cuando cambia la página o el término de búsqueda
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      fetchData(currentPage, searchTerm);
+    }, 500); // Debounce para la búsqueda
+    
+    return () => clearTimeout(timer);
+  }, [currentPage, searchTerm]);
+
+  const handlePageChange = (page) => {
+    if (page >= 1 && page <= pagination.last_page) {
+      setCurrentPage(page);
+    }
+  };
+
   const handleEdit = (department) => {
     setSelectedDepartment(department);
     setIsEditModalOpen(true);
-    console.log("Editando departamento:", department);
   };
 
-  const handleDelete = (departmentId) => {
-    // Llamada a la API para eliminar el departamento
+  const handleDelete = async (departmentId) => {
     Swal.fire({
       title: "Eliminar departamento",
-      text: "¿Estas seguro de eliminar el departamento?",
+      text: "¿Estás seguro de eliminar el departamento?",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonText: "Si, eliminar",
-    }).then((result) => {
+      confirmButtonText: "Sí, eliminar",
+      cancelButtonText: "Cancelar",
+    }).then(async (result) => {
       if (result.isConfirmed) {
-        axioInstance
-          .delete(`/departments/${departmentId}`)
-          .then((response) => {
-            console.log("Departamento eliminado:", response.data);
-            Swal.fire(
-              "Eliminado",
-              "El departamento ha sido eliminado.",
-              "success"
-            );
-            // Actualizar la lista de departamentos después de la eliminación
-            setData((prevData) =>
-              prevData.filter((dept) => dept.id !== departmentId)
-            );
-          })
-          .catch((error) => {
-            console.error("Error al eliminar el departamento:", error);
-          });
+        try {
+          await axioInstance.delete(`/departments/${departmentId}`);
+          Swal.fire(
+            "Eliminado",
+            "El departamento ha sido eliminado.",
+            "success"
+          );
+          // Recargar los datos manteniendo la página actual
+          fetchData(currentPage, searchTerm);
+        } catch (error) {
+          console.error("Error al eliminar el departamento:", error);
+          Swal.fire(
+            "Error",
+            "No se pudo eliminar el departamento.",
+            "error"
+          );
+        }
       }
     });
   };
 
   const handleUpdate = (updatedDepartment) => {
-    setData((prevData) =>
-      prevData.map((dept) =>
-        dept.id === updatedDepartment.id ? updatedDepartment : dept
-      )
-    );
+    setData(data.map(dept => 
+      dept.id === updatedDepartment.id ? updatedDepartment : dept
+    ));
+    setIsEditModalOpen(false);
   };
+
+  if (loading) return <Loading />;
+  if (error) return <p className="text-danger">{error}</p>;
+
   return (
     <div className={styles.tableContainer}>
       <input
@@ -108,8 +118,12 @@ function Tabla() {
         placeholder="Buscar departamento..."
         className={styles.searchInput}
         value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
+        onChange={(e) => {
+          setSearchTerm(e.target.value);
+          setCurrentPage(1); // Resetear a la primera página al buscar
+        }}
       />
+      
       <table className={styles.table}>
         <thead>
           <tr>
@@ -123,74 +137,80 @@ function Tabla() {
           </tr>
         </thead>
         <tbody>
-          {currentData.map((row) => (
-            <tr key={row.id}>
-              <td>{row.id}</td>
-              <td>{row.display_name}</td>
-              <td>{row.description}</td>
-              <td>{row.active ? "Activo" : "Inactivo"}</td>
-              <td>{new Date(row.created_at).toLocaleDateString()}</td>
-              <td>{new Date(row.updated_at).toLocaleDateString()}</td>
-
-              <td>
-                <HasPermission permissionName="departments-edit">
-                  <button
-                    onClick={() => handleEdit(row)}
-                    className="btn btn-primary"
-                  >
-                    Editar
-                  </button>
-                </HasPermission>
-                <HasPermission permissionName="departments-delete">
-
-                <button
-                  onClick={() => handleDelete(row.id)}
-                  className="btn btn-danger"
-                  >
-                  Eliminar
-                </button>
+          {data.length > 0 ? (
+            data.map((row) => (
+              <tr key={row.id}>
+                <td>{row.id}</td>
+                <td>{row.display_name}</td>
+                <td>{row.description}</td>
+                <td>{row.active ? "Activo" : "Inactivo"}</td>
+                <td>{new Date(row.created_at).toLocaleDateString()}</td>
+                <td>{new Date(row.updated_at).toLocaleDateString()}</td>
+                <td>
+                  <HasPermission permissionName="departments-edit">
+                    <button
+                      onClick={() => handleEdit(row)}
+                      className="btn btn-primary mx-1"
+                    >
+                      Editar
+                    </button>
                   </HasPermission>
+                  <HasPermission permissionName="departments-delete">
+                    <button
+                      onClick={() => handleDelete(row.id)}
+                      className="btn btn-danger mx-1"
+                    >
+                      Eliminar
+                    </button>
+                  </HasPermission>
+                </td>
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td colSpan="7" className="text-center py-4">
+                No se encontraron departamentos
               </td>
             </tr>
-          ))}
+          )}
         </tbody>
       </table>
-      <EditDepartmentModal
-        isOpen={isEditModalOpen}
-        onRequestClose={() => setIsEditModalOpen(false)}
-        department={selectedDepartment}
-        onUpdate={handleUpdate}
-      />
 
-      <div className="d-flex justify-content-between mt-2">
+      <div className="d-flex justify-content-between mt-3 align-items-center">
         <div className={styles.recordCount}>
-          Visualizando {startIndex + 1} a {Math.min(endIndex, totalRecords)} de{" "}
-          {totalRecords} registros.
+          Mostrando {data.length} de {pagination.total} registros
         </div>
-        <HasPermission permissionName={"departments-add"}>
-  <CustomButton
-          label="Crear departamento"
-          onClick={() => router.push("/dashboard/departamentos/crear")}
-        />
+        
+        <HasPermission permissionName="departments-add">
+          <CustomButton
+            label="Crear departamento"
+            onClick={() => router.push("/dashboard/departamentos/crear")}
+          />
         </HasPermission>
-      
       </div>
 
-      <div className={styles.pagination}>
+     <div className={styles.pagination}>
         <button
-          onClick={() => handlePageChange(currentPage - 1)}
+          onClick={() => setCurrentPage(currentPage - 1)}
           disabled={currentPage === 1}
         >
           Anterior
         </button>
         <button className={styles.currentPage}>{currentPage}</button>
         <button
-          onClick={() => handlePageChange(currentPage + 1)}
-          disabled={currentPage === totalPages}
+          onClick={() => setCurrentPage(currentPage + 1)}
+          disabled={currentPage === pagination.last_page}
         >
           Siguiente
         </button>
       </div>
+
+      <EditDepartmentModal
+        isOpen={isEditModalOpen}
+        onRequestClose={() => setIsEditModalOpen(false)}
+        department={selectedDepartment}
+        onUpdate={handleUpdate}
+      />
     </div>
   );
 }

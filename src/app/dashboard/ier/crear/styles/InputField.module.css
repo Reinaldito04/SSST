@@ -1,0 +1,39 @@
+.formLabel {
+    color: #333; /* Color un poco más suave para mejorar la legibilidad */
+    font-weight: 600; /* Más peso para resaltar la etiqueta */
+    font-size: 1rem; /* Tamaño de fuente ligeramente mayor */
+    margin-bottom: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.formInput {
+    width: 100%;
+    padding: 0.75rem 1rem; /* Más padding para un aspecto más cómodo */
+    border-radius: 8px; /* Bordes redondeados más suaves */
+    border: 1px solid #716E6E;
+    font-size: 1rem;
+    margin-bottom: 1rem;
+    margin-top: 0.2rem;
+    transition: border-color 0.3s ease; /* Efecto de transición suave */
+
+    /* Sombra sutil para mayor enfoque */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.formInput:focus {
+    border-color: #EE3333; /* Cambio de color al recibir foco */
+    outline: none; /* Eliminación del borde predeterminado del navegador */
+    box-shadow: 0 0 5px #EE3333; /* Sombra azul al enfocar */
+}
+
+/* Estilos para el select */
+.form-select {
+    background-color: #f8f9fa; /* Color de fondo más claro */
+    border: 1px solid #716E6E;
+    transition: border-color 0.3s ease; /* Transición suave */
+}
+
+.form-select:focus {
+    border-color: #EE3333; /* Cambio de color al recibir foco */
+    box-shadow: 0 0 5px #EE3333; /* Sombra azul al enfocar */
+}
