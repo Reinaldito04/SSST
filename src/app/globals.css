@@ -34,3 +34,20 @@ a {
   padding-right: 150px; /* Evitar que el contenido corte el scroll */
 
 }
+
+
+/* En tu archivo de estilos global o en el módulo CSS de la tabla */
+.status-badge {
+  width: 100%;
+  text-align: center;
+}
+
+table td {
+  position: relative;
+  overflow: visible;
+}
+
+/* Asegura que el dropdown no se corte */
+.table-responsive {
+  overflow: visible !important;
+}

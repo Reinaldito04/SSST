@@ -9,8 +9,9 @@ import Loading from "../../../../components/Loading";
 import EditDepartmentModal from "./EditDepartmentModal";
 import HasPermission from "../../../../components/HasPermission";
 import Swal from "sweetalert2";
+import ViewParticipantes from "./ViewParticipantes";
 import { FaRegEdit, FaRegTrashAlt } from "react-icons/fa";
-
+import StatusSelector from "./StatusSelector";
 function Tabla() {
   const router = useRouter();
   const [currentPage, setCurrentPage] = useState(1);
@@ -19,6 +20,8 @@ function Tabla() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+
+  const [isModalView, setIsModalView] = useState(false);
   const [selectedTask, setSelectedTask] = useState(null);
   const [pagination, setPagination] = useState({
     total: 0,
@@ -65,6 +68,11 @@ function Tabla() {
       prevData.map((task) => (task.id === updatedTask.id ? updatedTask : task))
     );
     setIsEditModalOpen(false);
+  };
+
+  const showParticipantes = (task) => {
+    setSelectedTask(task);
+    setIsModalView(true);
   };
 
   const handleDelete = (taskId) => {
@@ -145,6 +153,7 @@ function Tabla() {
             <tr>
               <th>ID</th>
               <th>Título</th>
+              <th>Descripcion</th>
               <th>Sector</th>
               <th>Planta</th>
               <th>Área</th>
@@ -162,6 +171,7 @@ function Tabla() {
                 <tr key={task.id}>
                   <td>{task.id}</td>
                   <td>{task.title}</td>
+                  <td>{task.description}</td>
                   <td>{task.sector_display_name}</td>
                   <td>{task.plant_display_name}</td>
                   <td>{task.area_display_name}</td>
@@ -169,12 +179,15 @@ function Tabla() {
                   <td>{getStatusBadge(task.status)}</td>
                   <td>{task.creator_name}</td>
                   <td>
-                    <span className="badge bg-primary">
+                    <span
+                      className="badge bg-primary"
+                      onClick={() => showParticipantes(task)}
+                    >
                       {task.participants.length}
                     </span>
                   </td>
                   <td>{formatDate(task.created_at)}</td>
-                  <td>
+                 <td style={{ minWidth: "120px" }}>
                     <div className="d-flex gap-2">
                       <HasPermission permissionName="tasks-edit">
                         <button
@@ -195,6 +208,17 @@ function Tabla() {
                           <FaRegTrashAlt />
                         </button>
                       </HasPermission>
+
+                      <StatusSelector
+                        task={task}
+                        onStatusChange={(taskId, newStatus) => {
+                          setData((prevData) =>
+                            prevData.map((t) =>
+                              t.id === taskId ? { ...t, status: newStatus } : t
+                            )
+                          );
+                        }}
+                      />
                     </div>
                   </td>
                 </tr>
@@ -242,15 +266,18 @@ function Tabla() {
         </button>
       </div>
 
+      <ViewParticipantes
+        tasks={selectedTask?.participants}
+        open={isModalView}
+        close={() => setIsModalView(false)}
+      />
+
       <EditDepartmentModal
         isOpen={isEditModalOpen}
         onRequestClose={() => setIsEditModalOpen(false)}
         department={selectedTask}
         onUpdate={handleUpdate}
       />
-
-          
-
     </div>
   );
 }
