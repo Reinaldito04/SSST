@@ -38,14 +38,17 @@ function Page() {
               />
             </div>
 
-            <div className="col-md-4 col-lg-4">
-              <CardModule
-                icon={<FaTasks />}
-                title="Casos"
-                description="Gestión de casos y seguimientos"
-                bgColor="bg-danger"
-              />
-            </div>
+             <HasPermission permissionName={"tasks-browse"}>
+              <div className="col-md-4 col-lg-4">
+                <CardModule
+                  icon={<FaFileAlt />}
+                  href={"/dashboard/tareas/consultar"}
+                  title="Tareas"
+                  description="Gestión de Tareas"
+                  bgColor="bg-info"
+                />
+              </div>
+            </HasPermission>
             <HasPermission permissionName={"departments-browse"}>
               <div className="col-md-6 col-lg-4">
                 <CardModule
@@ -96,17 +99,7 @@ function Page() {
               </div>
             </HasPermission>
 
-            <HasPermission permissionName={"tasks-browse"}>
-              <div className="col-md-6 col-lg-4">
-                <CardModule
-                  icon={<FaFileAlt />}
-                  href={"/dashboard/tareas/consultar"}
-                  title="Tareas"
-                  description="Gestión de Tareas"
-                  bgColor="bg-info"
-                />
-              </div>
-            </HasPermission>
+          
           </div>
         </div>
       </div>
