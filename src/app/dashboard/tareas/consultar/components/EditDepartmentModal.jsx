@@ -4,7 +4,6 @@ import React, { useState } from "react";
 import Modal from "react-modal";
 import { axioInstance } from "../../../../utils/axioInstance";
 
-
 // Estilos personalizados para el modal
 const customStyles = {
   content: {
@@ -31,24 +30,85 @@ const customStyles = {
 
 function EditDepartmentModal({ isOpen, onRequestClose, department, onUpdate }) {
   const [formData, setFormData] = useState({
-    name: department?.name || "",
+    title: department?.title || "",
     id: department?.id || "",
-    display_name: department?.display_name || "",
     description: department?.description || "",
-    active: department?.active ,
+    active: department?.active,
+    article_id: department?.arti,
+    sector_id: department?.sector,
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [sectors, setSectors] = useState([]);
+  const [loadingSector, setLoadingSector] = useState(true);
 
+  const [articulos, setArticulos] = useState([]);
+  const [loadingArticulos, setLoadingArticulos] = useState(true);
   React.useEffect(() => {
     setFormData({
-        name: department?.name || "",
-        id: department?.id || "",
-      display_name: department?.display_name || "",
+      title: department?.title || "",
+      id: department?.id || "",
       description: department?.description || "",
-      active: department?.active ,
+      article_id: department?.arti,
+      sector_id: department?.sector,
     });
   }, [department]);
+  React.useEffect(() => {
+    const fetchSectores = async () => {
+      try {
+        const response = await axioInstance.get("/sectors?paginate=0");
+        setSectors(response.data.data);
+        setLoadingSector(false);
+      } catch (error) {
+        console.error("Error al cargar los sectores:", error);
+        setLoadingSector(false);
+        toast.error("Error al cargar los sectores disponibles", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        });
+      }
+    };
+
+    const fetchArticulos = async () => {
+      try {
+        const response = await axioInstance.get("/articles?paginate=0");
+        setArticulos(response.data.data);
+        setLoadingArticulos(false);
+      } catch (error) {
+        console.error("Error al cargar los articulos:", error);
+        setLoadingArticulos(false);
+        toast.error("Error al cargar los articulos disponibles", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        });
+      }
+    };
+
+    fetchArticulos();
+    fetchSectores();
+  }, []);
+
+  const sectoresOptions = sectors.map((area) => ({
+    value: area.id,
+    label: area.display_name,
+  }));
+
+  const articulosOptions = articulos.map((area) => ({
+    value: area.id,
+    label: area.display_name,
+  }));
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -65,7 +125,7 @@ function EditDepartmentModal({ isOpen, onRequestClose, department, onUpdate }) {
 
     try {
       const response = await axioInstance.put(
-        `/departments/${department.id}`,
+        `/tasks/${department.id}`,
         formData
       );
       onUpdate(response.data.data);
@@ -73,7 +133,7 @@ function EditDepartmentModal({ isOpen, onRequestClose, department, onUpdate }) {
     } catch (err) {
       setError(
         err.response?.data?.message ||
-          "Error al actualizar el departamento. Por favor, intente nuevamente."
+          "Error al actualizar la tarea. Por favor, intente nuevamente."
       );
     } finally {
       setLoading(false);
@@ -85,13 +145,13 @@ function EditDepartmentModal({ isOpen, onRequestClose, department, onUpdate }) {
       isOpen={isOpen}
       onRequestClose={onRequestClose}
       style={customStyles}
-      contentLabel="Editar Departamento"
+      contentLabel="Editar Tarea"
       closeTimeoutMS={300}
     >
       <div className="modal-dialog">
         <div className="modal-content border-0">
           {/* Encabezado con gradiente */}
-          <div 
+          <div
             className="modal-header border-0 text-white"
             style={{
               background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
@@ -101,7 +161,7 @@ function EditDepartmentModal({ isOpen, onRequestClose, department, onUpdate }) {
           >
             <h5 className="modal-title fw-bold">
               <i className="bi bi-pencil-square me-2"></i>
-              Editar Departamento
+              Editar Tarea
             </h5>
             <button
               type="button"
@@ -110,22 +170,28 @@ function EditDepartmentModal({ isOpen, onRequestClose, department, onUpdate }) {
               aria-label="Close"
             ></button>
           </div>
-          
+
           {/* Cuerpo del modal */}
           <div className="modal-body p-4">
             {error && (
-              <div className="alert alert-danger d-flex align-items-center" role="alert">
+              <div
+                className="alert alert-danger d-flex align-items-center"
+                role="alert"
+              >
                 <i className="bi bi-exclamation-triangle-fill me-2"></i>
                 <div>{error}</div>
               </div>
             )}
-            
+
             <form onSubmit={handleSubmit}>
               {/* Campo Nombre */}
               <div className="mb-4">
-                <label htmlFor="display_name" className="form-label fw-semibold">
+                <label
+                  htmlFor="display_name"
+                  className="form-label fw-semibold"
+                >
                   <i className="bi bi-building me-2 text-primary"></i>
-                  Nombre del Departamento
+                  Titulo de la tarea
                 </label>
                 <div className="input-group">
                   <span className="input-group-text bg-light">
@@ -134,9 +200,9 @@ function EditDepartmentModal({ isOpen, onRequestClose, department, onUpdate }) {
                   <input
                     type="text"
                     className="form-control form-control-lg"
-                    id="display_name"
-                    name="display_name"
-                    value={formData.display_name}
+                    id="title"
+                    name="title"
+                    value={formData.title}
                     onChange={handleChange}
                     required
                     placeholder="Ej: Recursos Humanos"
@@ -161,32 +227,61 @@ function EditDepartmentModal({ isOpen, onRequestClose, department, onUpdate }) {
                     value={formData.description}
                     onChange={handleChange}
                     rows="4"
-                    placeholder="Breve descripción del departamento..."
+                    placeholder="Breve descripción de la tarea..."
                     style={{ minHeight: "100px" }}
                   />
                 </div>
               </div>
-
-              {/* Checkbox Activo */}
-              <div className="mb-4 form-check form-switch">
-                <input
-                  type="checkbox"
-                  className="form-check-input"
-                  id="active"
-                  name="active"
-                  checked={formData.active}
-                  onChange={handleChange}
-                  role="switch"
-                />
-                <label className="form-check-label fw-semibold" htmlFor="active">
-                  <i className="bi bi-power me-2 text-primary"></i>
-                  Departamento activo
+              <div className="mb-4">
+                <label htmlFor="description" className="form-label fw-semibold">
+                  <i className="bi bi-card-text me-2 text-primary"></i>
+                  Articulo
                 </label>
-                <small className="text-muted d-block mt-1">
-                  {formData.active ? 
-                    "(El departamento está visible en el sistema)" : 
-                    "(El departamento está oculto en el sistema)"}
-                </small>
+                <div className="input-group">
+                  <span className="input-group-text bg-light">
+                    <i className="bi bi-text-paragraph"></i>
+                  </span>
+                  <select
+                    className="form-select"
+                    id="article_id"
+                    name="article_id"
+                    value={formData.article_id}
+                    onChange={handleChange}
+                  >
+                    <option value="">Seleccionar Articulo</option>
+                    {articulosOptions.map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              <div className="mb-4">
+                <label htmlFor="description" className="form-label fw-semibold">
+                  <i className="bi bi-card-text me-2 text-primary"></i>
+                  Sector
+                </label>
+                <div className="input-group">
+                  <span className="input-group-text bg-light">
+                    <i className="bi bi-text-paragraph"></i>
+                  </span>
+                  <select
+                    className="form-select"
+                    id="sector_id"
+                    name="sector_id"
+                    value={formData.sector_id}
+                    onChange={handleChange}
+                  >
+                    <option value="">Seleccionar Sector</option>
+                    {sectoresOptions.map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
               </div>
 
               {/* Pie del modal */}
@@ -207,7 +302,10 @@ function EditDepartmentModal({ isOpen, onRequestClose, department, onUpdate }) {
                 >
                   {loading ? (
                     <>
-                      <span className="spinner-border spinner-border-sm me-2" role="status"></span>
+                      <span
+                        className="spinner-border spinner-border-sm me-2"
+                        role="status"
+                      ></span>
                       Guardando...
                     </>
                   ) : (

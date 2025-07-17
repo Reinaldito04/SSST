@@ -10,8 +10,21 @@ import EditDepartmentModal from "./EditDepartmentModal";
 import HasPermission from "../../../../components/HasPermission";
 import Swal from "sweetalert2";
 import ViewParticipantes from "./ViewParticipantes";
-import { FaRegEdit, FaRegTrashAlt } from "react-icons/fa";
+import {
+  FaRegEdit,
+  FaRegTrashAlt,
+  FaFilter,
+  FaTimes,
+  FaComment,
+  FaFilePdf
+} from "react-icons/fa";
 import StatusSelector from "./StatusSelector";
+import DatePicker from "react-datepicker";
+import CommentsModal from "./CommentsSection";
+import  ModalTasksFiles from './ModalTasksFiles';
+import "react-datepicker/dist/react-datepicker.css";
+
+
 function Tabla() {
   const router = useRouter();
   const [currentPage, setCurrentPage] = useState(1);
@@ -20,9 +33,22 @@ function Tabla() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-
   const [isModalView, setIsModalView] = useState(false);
+  const [isModalComments, setIsModalComments] = useState(false);
+  const [isModalFiles, setIsModalFiles] = useState(false);
   const [selectedTask, setSelectedTask] = useState(null);
+  const [showFilters, setShowFilters] = useState(false);
+  const [filters, setFilters] = useState({
+    status: "",
+    created_at_start: null,
+    created_at_end: null,
+    approved_at_start: null,
+    approved_at_end: null,
+    executed_at_start: null,
+    executed_at_end: null,
+    canceled_at_start: null,
+    canceled_at_end: null,
+  });
   const [pagination, setPagination] = useState({
     total: 0,
     per_page: 10,
@@ -30,33 +56,78 @@ function Tabla() {
     last_page: 1,
   });
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-        const response = await axioInstance.get(
-          `/tasks?page=${currentPage}&search_input=${searchTerm}`
-        );
-        setData(response.data.data);
-        setPagination({
-          total: response.data.total,
-          per_page: response.data.per_page,
-          current_page: response.data.current_page,
-          last_page: response.data.last_page,
-        });
-        setLoading(false);
-      } catch (err) {
-        setError("Error al obtener los datos");
-        setLoading(false);
-      }
-    };
+  const fetchData = async () => {
+    try {
+      setLoading(true);
 
+      // Construir parámetros de filtro
+      let params = {
+        page: currentPage,
+        search_input: searchTerm,
+        status: filters.status,
+      };
+
+      // Añadir filtros de fecha si existen
+      const periodFilters = [];
+
+      if (filters.created_at_start || filters.created_at_end) {
+        periodFilters.push({
+          column: "created_at",
+          start: filters.created_at_start?.toISOString().split("T")[0],
+          end: filters.created_at_end?.toISOString().split("T")[0],
+        });
+      }
+
+      if (filters.approved_at_start || filters.approved_at_end) {
+        periodFilters.push({
+          column: "approved_at",
+          start: filters.approved_at_start?.toISOString().split("T")[0],
+          end: filters.approved_at_end?.toISOString().split("T")[0],
+        });
+      }
+
+      if (filters.executed_at_start || filters.executed_at_end) {
+        periodFilters.push({
+          column: "executed_at",
+          start: filters.executed_at_start?.toISOString().split("T")[0],
+          end: filters.executed_at_end?.toISOString().split("T")[0],
+        });
+      }
+
+      if (filters.canceled_at_start || filters.canceled_at_end) {
+        periodFilters.push({
+          column: "canceled_at",
+          start: filters.canceled_at_start?.toISOString().split("T")[0],
+          end: filters.canceled_at_end?.toISOString().split("T")[0],
+        });
+      }
+
+      if (periodFilters.length > 0) {
+        params.period_filters = periodFilters;
+      }
+
+      const response = await axioInstance.get("/tasks", { params });
+      setData(response.data.data);
+      setPagination({
+        total: response.data.total,
+        per_page: response.data.per_page,
+        current_page: response.data.current_page,
+        last_page: response.data.last_page,
+      });
+      setLoading(false);
+    } catch (err) {
+      setError("Error al obtener los datos");
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
     const debounceTimer = setTimeout(() => {
       fetchData();
     }, 500);
 
     return () => clearTimeout(debounceTimer);
-  }, [currentPage, searchTerm]);
+  }, [currentPage, searchTerm, filters]);
 
   const handleEdit = (task) => {
     setSelectedTask(task);
@@ -75,6 +146,17 @@ function Tabla() {
     setIsModalView(true);
   };
 
+  const showFiles=(task)=> {
+    setSelectedTask(task);
+    setIsModalFiles(true);
+  }
+
+
+  const handleComments = (task) => {
+    setSelectedTask(task);
+    setIsModalComments(true);
+  };
+
   const handleDelete = (taskId) => {
     Swal.fire({
       title: "¿Estás seguro?",
@@ -91,7 +173,7 @@ function Tabla() {
           .delete(`/tasks/${taskId}`)
           .then(() => {
             Swal.fire("Eliminado!", "La tarea ha sido eliminada.", "success");
-            fetchData(); // Recargar los datos
+            fetchData();
           })
           .catch((error) => {
             console.error("Error al eliminar:", error);
@@ -128,24 +210,234 @@ function Tabla() {
     );
   };
 
+  const resetFilters = () => {
+    setFilters({
+      status: "",
+      created_at_start: null,
+      created_at_end: null,
+      approved_at_start: null,
+      approved_at_end: null,
+      executed_at_start: null,
+      executed_at_end: null,
+      canceled_at_start: null,
+      canceled_at_end: null,
+    });
+    setCurrentPage(1);
+  };
+
+  const hasActiveFilters = () => {
+    return (
+      filters.status ||
+      filters.created_at_start ||
+      filters.created_at_end ||
+      filters.approved_at_start ||
+      filters.approved_at_end ||
+      filters.executed_at_start ||
+      filters.executed_at_end ||
+      filters.canceled_at_start ||
+      filters.canceled_at_end
+    );
+  };
+
   if (loading) return <Loading />;
   if (error) return <div className="alert alert-danger">{error}</div>;
 
   return (
     <div className={styles.tableContainer}>
-      <div className="d-flex justify-content-between mb-3">
-        <input
-          type="text"
-          placeholder="Buscar tarea por título, sector o estado..."
-          className={`form-control ${styles.searchInput}`}
-          value={searchTerm}
-          onChange={(e) => {
-            setSearchTerm(e.target.value);
-            setCurrentPage(1); // Resetear a la primera página al buscar
-          }}
-          style={{ width: "400px" }}
+      <div className="d-flex justify-content-between mb-3 flex-wrap gap-2">
+        <div className="d-flex gap-2 flex-grow-1">
+          <input
+            type="text"
+            placeholder="Buscar tarea por título, sector o estado..."
+            className={`form-control ${styles.searchInput}`}
+            value={searchTerm}
+            onChange={(e) => {
+              setSearchTerm(e.target.value);
+              setCurrentPage(1);
+            }}
+            style={{ maxWidth: "400px" }}
+          />
+
+          <button
+            className="btn btn-secondary d-flex align-items-center gap-1"
+            onClick={() => setShowFilters(!showFilters)}
+          >
+            <FaFilter /> Filtros
+          </button>
+
+          {hasActiveFilters() && (
+            <button
+              className="btn btn-outline-danger d-flex align-items-center gap-1"
+              onClick={resetFilters}
+            >
+              <FaTimes /> Limpiar
+            </button>
+          )}
+        </div>
+
+        <CustomButton
+          label="Crear tarea"
+          onClick={() => router.push("/dashboard/tareas/crear")}
         />
       </div>
+
+      {showFilters && (
+        <div className="card mb-3">
+          <div className="card-body">
+            <h5 className="card-title">Filtros avanzados</h5>
+            <div className="row g-3">
+              <div className="col-md-3">
+                <label className="form-label">Estado</label>
+                <select
+                  className="form-select"
+                  value={filters.status}
+                  onChange={(e) =>
+                    setFilters({ ...filters, status: e.target.value })
+                  }
+                >
+                  <option value="">Todos</option>
+                  <option value="En proceso">En proceso</option>
+                  <option value="Ejecutado">Ejecutado</option>
+                  <option value="Aprobado">Aprobado</option>
+                  <option value="Cancelado">Cancelado</option>
+                </select>
+              </div>
+
+              <div className="col-md-3">
+                <label className="form-label">Fecha creación (inicio)</label>
+                <DatePicker
+                  selected={filters.created_at_start}
+                  onChange={(date) =>
+                    setFilters({ ...filters, created_at_start: date })
+                  }
+                  selectsStart
+                  startDate={filters.created_at_start}
+                  endDate={filters.created_at_end}
+                  className="form-control"
+                  placeholderText="Seleccionar fecha"
+                  dateFormat="dd/MM/yyyy"
+                />
+              </div>
+
+              <div className="col-md-3">
+                <label className="form-label">Fecha creación (fin)</label>
+                <DatePicker
+                  selected={filters.created_at_end}
+                  onChange={(date) =>
+                    setFilters({ ...filters, created_at_end: date })
+                  }
+                  selectsEnd
+                  startDate={filters.created_at_start}
+                  endDate={filters.created_at_end}
+                  minDate={filters.created_at_start}
+                  className="form-control"
+                  placeholderText="Seleccionar fecha"
+                  dateFormat="dd/MM/yyyy"
+                />
+              </div>
+
+              <div className="col-md-3">
+                <label className="form-label">Fecha aprobación (inicio)</label>
+                <DatePicker
+                  selected={filters.approved_at_start}
+                  onChange={(date) =>
+                    setFilters({ ...filters, approved_at_start: date })
+                  }
+                  selectsStart
+                  startDate={filters.approved_at_start}
+                  endDate={filters.approved_at_end}
+                  className="form-control"
+                  placeholderText="Seleccionar fecha"
+                  dateFormat="dd/MM/yyyy"
+                />
+              </div>
+
+              <div className="col-md-3">
+                <label className="form-label">Fecha aprobación (fin)</label>
+                <DatePicker
+                  selected={filters.approved_at_end}
+                  onChange={(date) =>
+                    setFilters({ ...filters, approved_at_end: date })
+                  }
+                  selectsEnd
+                  startDate={filters.approved_at_start}
+                  endDate={filters.approved_at_end}
+                  minDate={filters.approved_at_start}
+                  className="form-control"
+                  placeholderText="Seleccionar fecha"
+                  dateFormat="dd/MM/yyyy"
+                />
+              </div>
+
+              <div className="col-md-3">
+                <label className="form-label">Fecha ejecución (inicio)</label>
+                <DatePicker
+                  selected={filters.executed_at_start}
+                  onChange={(date) =>
+                    setFilters({ ...filters, executed_at_start: date })
+                  }
+                  selectsStart
+                  startDate={filters.executed_at_start}
+                  endDate={filters.executed_at_end}
+                  className="form-control"
+                  placeholderText="Seleccionar fecha"
+                  dateFormat="dd/MM/yyyy"
+                />
+              </div>
+
+              <div className="col-md-3">
+                <label className="form-label">Fecha ejecución (fin)</label>
+                <DatePicker
+                  selected={filters.executed_at_end}
+                  onChange={(date) =>
+                    setFilters({ ...filters, executed_at_end: date })
+                  }
+                  selectsEnd
+                  startDate={filters.executed_at_start}
+                  endDate={filters.executed_at_end}
+                  minDate={filters.executed_at_start}
+                  className="form-control"
+                  placeholderText="Seleccionar fecha"
+                  dateFormat="dd/MM/yyyy"
+                />
+              </div>
+
+              <div className="col-md-3">
+                <label className="form-label">Fecha cancelación (inicio)</label>
+                <DatePicker
+                  selected={filters.canceled_at_start}
+                  onChange={(date) =>
+                    setFilters({ ...filters, canceled_at_start: date })
+                  }
+                  selectsStart
+                  startDate={filters.canceled_at_start}
+                  endDate={filters.canceled_at_end}
+                  className="form-control"
+                  placeholderText="Seleccionar fecha"
+                  dateFormat="dd/MM/yyyy"
+                />
+              </div>
+
+              <div className="col-md-3">
+                <label className="form-label">Fecha cancelación (fin)</label>
+                <DatePicker
+                  selected={filters.canceled_at_end}
+                  onChange={(date) =>
+                    setFilters({ ...filters, canceled_at_end: date })
+                  }
+                  selectsEnd
+                  startDate={filters.canceled_at_start}
+                  endDate={filters.canceled_at_end}
+                  minDate={filters.canceled_at_start}
+                  className="form-control"
+                  placeholderText="Seleccionar fecha"
+                  dateFormat="dd/MM/yyyy"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="table-responsive">
         <table className={`table table-hover ${styles.table}`}>
@@ -182,12 +474,13 @@ function Tabla() {
                     <span
                       className="badge bg-primary"
                       onClick={() => showParticipantes(task)}
+                      style={{ cursor: "pointer" }}
                     >
                       {task.participants.length}
                     </span>
                   </td>
                   <td>{formatDate(task.created_at)}</td>
-                 <td style={{ minWidth: "120px" }}>
+                  <td style={{ minWidth: "120px" }}>
                     <div className="d-flex gap-2">
                       <HasPermission permissionName="tasks-edit">
                         <button
@@ -199,6 +492,23 @@ function Tabla() {
                         </button>
                       </HasPermission>
 
+                      <button
+                        type="button"
+                        className="btn btn-sm btn-warning"
+                        title="Comentarios"
+                        onClick={() => handleComments(task)}
+                      >
+                        <FaComment />
+                      </button>
+
+                      <button
+                        type="button"
+                        className="btn btn-sm btn-info"
+                        title="Archivos"
+                        onClick={() => showFiles(task)}
+                      >
+                        <FaFilePdf />
+                      </button>
                       <HasPermission permissionName="tasks-delete">
                         <button
                           onClick={() => handleDelete(task.id)}
@@ -225,7 +535,7 @@ function Tabla() {
               ))
             ) : (
               <tr>
-                <td colSpan="10" className="text-center py-4">
+                <td colSpan="12" className="text-center py-4">
                   No se encontraron tareas
                 </td>
               </tr>
@@ -233,6 +543,7 @@ function Tabla() {
           </tbody>
         </table>
       </div>
+
       <div className="d-flex justify-content-between mt-2">
         <div className={styles.recordCount}>
           Mostrando {(pagination.current_page - 1) * pagination.per_page + 1} a{" "}
@@ -242,14 +553,8 @@ function Tabla() {
           )}{" "}
           de {pagination.total} registros.
         </div>
-
-        <div className="d-flex gap-2">
-          <CustomButton
-            label="Crear tarea"
-            onClick={() => router.push("/dashboard/tareas/crear")}
-          />
-        </div>
       </div>
+
       <div className={styles.pagination}>
         <button
           onClick={() => setCurrentPage(currentPage - 1)}
@@ -278,6 +583,19 @@ function Tabla() {
         department={selectedTask}
         onUpdate={handleUpdate}
       />
+
+      <CommentsModal
+        task={selectedTask}
+        isOpen={isModalComments}
+        onClose={() => setIsModalComments(false)}
+      />
+
+          <ModalTasksFiles
+        task={selectedTask}
+        isOpen={isModalFiles}
+        onClose={() => setIsModalFiles(false)}
+      />
+
     </div>
   );
 }

@@ -5,40 +5,49 @@ import styled from "styled-components";
 import { FaChevronDown, FaCheck } from "react-icons/fa";
 import Swal from "sweetalert2";
 import { axioInstance } from "../../../../utils/axioInstance";
+import { useUserStore } from "../../../../store/userStore";
+import HasPermission from "../../../../components/HasPermission";
 const statusOptions = [
+  { value: "execute", label: "Ejecutado", color: "#0dcaf0" },
   { value: "approve", label: "Aprobado", color: "#198754" },
   { value: "decline", label: "Cancelado", color: "#dc3545" },
-  { value: "execute", label: "Ejecutado", color: "#0dcaf0" },
+  { value: "in_process", label: "En proceso", color: "#6c757d" },
 ];
+
 export const statusDictionary = {
-  // Backend value -> Display value
-  approve: "Aprobado",
-  decline: "Cancelado", 
-  execute: "Ejecutado",
+  "En proceso": "in_process",
+  "Ejecutado": "execute",
+  "Aprobado": "approve",
+  "Cancelado": "decline",
   
-  // Display value -> Backend value (inverso)
-  Aprobado: "approve",
-  Cancelado: "decline",
-  Ejecutado: "execute"
+  in_process: "En proceso",
+  execute: "Ejecutado",
+  approve: "Aprobado",
+  decline: "Cancelado"
 };
 
-// Función helper para traducir
 export const translateStatus = (status, toBackend = false) => {
   if (toBackend) {
-    return statusDictionary[status] || status; // Si no encuentra, devuelve el original
+    return statusDictionary[status] || status;
   }
   return statusDictionary[status] || status;
 };
 
-
-
 const StatusSelector = ({ task, onStatusChange }) => {
+  const { user } = useUserStore();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
- const currentStatus = statusOptions.find(
-  (opt) => opt.value === translateStatus(task.status, true)
-) || statusOptions[0];
-  // Cerrar dropdown al hacer clic fuera
+
+  const getCurrentStatus = () => {
+    const backendStatus = task.status;
+    const selectorValue = translateStatus(backendStatus, true);
+    
+    return statusOptions.find(opt => opt.value === selectorValue) || 
+           { value: "in_process", label: "En proceso", color: "#6c757d" };
+  };
+
+  const currentStatus = getCurrentStatus();
+
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -54,6 +63,18 @@ const StatusSelector = ({ task, onStatusChange }) => {
 
   const handleStatusChange = async (newStatus) => {
     try {
+      // Validaciones generales
+      if (task.status === "Cancelado" || task.status === "Aprobado") {
+        Swal.fire("Error", "No se puede modificar una tarea ya aprobada o cancelada", "error");
+        return;
+      }
+
+      // Validar transiciones de estado
+      if (task.status === "En proceso" && newStatus === "approve") {
+        Swal.fire("Error", "No se puede aprobar una tarea que no ha sido ejecutada", "error");
+        return;
+      }
+
       await axioInstance.post(`/tasks/${newStatus}`, {
         task_id: task.id,
       });
@@ -61,32 +82,72 @@ const StatusSelector = ({ task, onStatusChange }) => {
       setIsOpen(false);
     } catch (error) {
       console.error("Error al cambiar el estado:", error);
-      Swal.fire("Error", error.response.data.message || "Error al cambiar el estado", "error");
+      Swal.fire("Error", error.response?.data?.message || "Error al cambiar el estado", "error");
     }
   };
+
+  // Función para determinar las opciones disponibles
+  const getAvailableOptions = () => {
+    const baseOptions = [];
+
+    // Opción Ejecutar (solo para no supervisores)
+    if (!HasPermission({ permissionName: "tasks-supervise", children: true })) {
+      if (task.status === "En proceso") {
+        baseOptions.push(statusOptions.find(opt => opt.value === "execute"));
+      }
+    }
+
+    // Opción En proceso (solo para no supervisores)
+    // if (!HasPermission({ permissionName: "tasks-supervise", children: true })) {
+    //   if (["En proceso", "Ejecutado"].includes(task.status)) {
+    //     baseOptions.push(statusOptions.find(opt => opt.value === "in_process"));
+    //   }
+    // }
+
+    // Opciones de aprobar y rechazar (para supervisores)
+    if (HasPermission({ permissionName: "tasks-supervise", children: true })) {
+      if (["En proceso", "Ejecutado"].includes(task.status)) {
+        baseOptions.push(
+          statusOptions.find(opt => opt.value === "approve"),
+          statusOptions.find(opt => opt.value === "decline")
+        );
+      }
+    } 
+
+    // Filtrar opciones undefined y quitar duplicados
+    return baseOptions.filter(opt => opt).filter((opt, index, self) =>
+      index === self.findIndex(t => t.value === opt.value)
+    );
+  };
+
+  const availableOptions = getAvailableOptions();
+  const isDisabled = availableOptions.length === 0 || 
+                    (availableOptions.length === 1 && 
+                     availableOptions[0].value === translateStatus(task.status, true));
 
   return (
     <SelectorContainer ref={dropdownRef}>
       <CurrentStatus
         $color={currentStatus.color}
-        onClick={() => setIsOpen(!isOpen)}
-        className="status-badge" // Clase para integración con tu tabla
+        onClick={() => !isDisabled && setIsOpen(!isOpen)}
+        className="status-badge"
+        $disabled={isDisabled}
       >
         {currentStatus.label}
-        <FaChevronDown size={12} style={{ marginLeft: "4px" }} />
+        {!isDisabled && <FaChevronDown size={12} style={{ marginLeft: "4px" }} />}
       </CurrentStatus>
 
-      {isOpen && (
+      {isOpen && !isDisabled && (
         <DropdownMenu $position={task.id % 2 === 0 ? "left" : "right"}>
-          {statusOptions.map((option) => (
+          {availableOptions.map((option) => (
             <DropdownItem
               key={option.value}
               onClick={() => handleStatusChange(option.value)}
-              $active={option.value === task.status}
+              $active={option.value === translateStatus(task.status, true)}
             >
               <StatusDot $color={option.color} />
               {option.label}
-              {option.value === task.status && (
+              {option.value === translateStatus(task.status, true) && (
                 <FaCheck size={12} style={{ marginLeft: "auto" }} />
               )}
             </DropdownItem>
@@ -97,7 +158,7 @@ const StatusSelector = ({ task, onStatusChange }) => {
   );
 };
 
-// Estilos optimizados para integración con tablas
+// Estilos (se mantienen igual)
 const SelectorContainer = styled.div`
   position: relative;
   display: inline-block;
@@ -114,16 +175,17 @@ const CurrentStatus = styled.div`
   color: white;
   font-size: 12px;
   font-weight: 500;
-  cursor: pointer;
+  cursor: ${(props) => (props.$disabled ? 'default' : 'pointer')};
   user-select: none;
   transition: all 0.2s;
   max-width: 100%;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  opacity: ${(props) => (props.$disabled ? 0.7 : 1)};
 
   &:hover {
-    opacity: 0.9;
+    opacity: ${(props) => (props.$disabled ? 0.7 : 0.9)};
   }
 `;
 
