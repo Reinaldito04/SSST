@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Modal from "react-modal";
+import { axioInstance } from '../../../../utils/axioInstance';
+import Swal from 'sweetalert2';
 
 const customStyles = {
   content: {
@@ -25,6 +27,52 @@ const customStyles = {
 };
 
 function ViewParticipantes({ tasks, open, close }) {
+  const [searchTerm, setSearchTerm] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
+  const [isSearching, setIsSearching] = useState(false);
+  const [showAddSection, setShowAddSection] = useState(false);
+  const participants = tasks?.participants || [];
+  // Función para buscar usuarios en la API
+  const searchUsers = async () => {
+    if (!searchTerm.trim()) return;
+    
+    setIsSearching(true);
+    try {
+      const response = await axioInstance.get(`/users?search=${searchTerm}`);
+      setSearchResults(response?.data?.data || []);
+    } catch (error) {
+      console.error("Error fetching users:", error);
+      setSearchResults([]);
+    } finally {
+      setIsSearching(false);
+    }
+  };
+
+  // Función para agregar un nuevo participante
+  const addParticipant = async (user) => {
+    try {
+      const response = await axioInstance.post(`/tasks/assign-participants`, 
+        {
+          taskId: tasks.id,
+          userId: [user.id]
+        }
+      );
+      Swal.fire({
+        icon: "success",
+        title: "Participante Agregado",
+        text: "El participante se ha agregado correctamente",
+        background: "#f8f9fa",
+      })
+      console.log("Participant added:", response.data);
+    } catch (error) {
+      console.error("Error adding participant:", error);
+    } finally {
+      setSearchTerm('');
+      setSearchResults([]);
+      setShowAddSection(false);
+    }
+  };
+
   return (
     <Modal
       isOpen={open}
@@ -52,9 +100,83 @@ function ViewParticipantes({ tasks, open, close }) {
         
         {/* Cuerpo del modal */}
         <div className="modal-body p-0">
-          {tasks && tasks.length > 0 ? (
+          {/* Sección para agregar nuevos participantes */}
+          {showAddSection && (
+            <div className="p-4 border-bottom">
+              <div className="input-group mb-3">
+                <input
+                  type="text"
+                  className="form-control rounded-pill"
+                  placeholder="Buscar usuarios..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  onKeyPress={(e) => e.key === 'Enter' && searchUsers()}
+                />
+                <button 
+                  className="btn btn-primary rounded-pill ms-2"
+                  onClick={searchUsers}
+                  disabled={isSearching || !searchTerm.trim()}
+                  style={{
+                    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                    border: 'none'
+                  }}
+                >
+                  {isSearching ? 'Buscando...' : 'Buscar'}
+                </button>
+              </div>
+              
+              {/* Resultados de búsqueda */}
+              {searchResults.length > 0 && (
+                <div className="search-results mt-3">
+                  <h6 className="text-muted mb-2">Resultados de búsqueda:</h6>
+                  <ul className="list-group">
+                    {searchResults.map((user, index) => (
+                      <li 
+                        key={`search-${index}`}
+                        className="list-group-item d-flex justify-content-between align-items-center py-2 px-3 mb-2 rounded"
+                        style={{
+                          borderLeft: 'none',
+                          borderRight: 'none',
+                          backgroundColor: '#f8f9fa'
+                        }}
+                      >
+                        <div className="d-flex align-items-center">
+                          <div className="avatar-sm me-3" style={{
+                            width: '32px',
+                            height: '32px',
+                            borderRadius: '50%',
+                            backgroundColor: '#e9ecef',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            color: '#6c757d',
+                            fontWeight: 'bold'
+                          }}>
+                            {user.name ? user.name.charAt(0).toUpperCase() : 'U'}
+                          </div>
+                          <div>
+                            <h6 className="mb-0 fw-semibold">{user.name || `Usuario ${index + 1}`}</h6>
+                            {user.email && <small className="text-muted">{user.email}</small>}
+                          </div>
+                        </div>
+                        <button 
+                          className="btn btn-sm btn-outline-primary rounded-pill"
+                          onClick={() => addParticipant(user)}
+                        >
+                          <i className="bi bi-plus"></i> Agregar
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
+          )}
+          
+          {/* Lista de participantes existentes */}
+          {participants && participants.length > 0 ? (
             <ul className="list-group list-group-flush">
-              {tasks.map((task, index) => (
+              {participants.map((participant, index) => (
                 <li 
                   key={index} 
                   className="list-group-item d-flex justify-content-between align-items-center py-3 px-4"
@@ -78,14 +200,14 @@ function ViewParticipantes({ tasks, open, close }) {
                       color: '#6c757d',
                       fontWeight: 'bold'
                     }}>
-                      {task.name ? task.name.charAt(0).toUpperCase() : (index + 1)}
+                      {participant.name ? participant.name.charAt(0).toUpperCase() : (index + 1)}
                     </div>
                     <div>
-                      <h6 className="mb-0 fw-semibold">{task.name || `Participante ${index + 1}`}</h6>
-                      {task.email && <small className="text-muted">{task.email}</small>}
+                      <h6 className="mb-0 fw-semibold">{participant.name || `Participante ${index + 1}`}</h6>
+                      {participant.email && <small className="text-muted">{participant.email}</small>}
                     </div>
                   </div>
-                  {task.role && (
+                  {participant.role && (
                     <span 
                       className="badge rounded-pill px-3 py-2"
                       style={{
@@ -94,7 +216,7 @@ function ViewParticipantes({ tasks, open, close }) {
                         fontWeight: '500'
                       }}
                     >
-                      {task.role}
+                      {participant.role}
                     </span>
                   )}
                 </li>
@@ -124,9 +246,10 @@ function ViewParticipantes({ tasks, open, close }) {
               background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
               border: 'none'
             }}
+            onClick={() => setShowAddSection(!showAddSection)}
           >
-            <i className="bi bi-plus-circle me-2"></i>
-            Agregar Participante
+            <i className={`bi ${showAddSection ? 'bi-x-circle' : 'bi-plus-circle'} me-2`}></i>
+            {showAddSection ? 'Cancelar' : 'Agregar Participante'}
           </button>
         </div>
       </div>

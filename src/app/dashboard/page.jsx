@@ -38,7 +38,19 @@ function Page() {
               />
             </div>
 
-             <HasPermission permissionName={"tasks-browse"}>
+<HasPermission permissionName={"task_plans-browse"}>
+   <div className="col-md-4 col-lg-4">
+              <CardModule
+                icon={<FaChartPie />}
+                title="Planificacion"
+                description="Planificacion de tareas"
+                bgColor="bg-info"
+                href="/dashboard/planificacion/consultar"
+              />
+            </div>
+</HasPermission>
+         
+            <HasPermission permissionName={"tasks-browse"}>
               <div className="col-md-4 col-lg-4">
                 <CardModule
                   icon={<FaFileAlt />}
@@ -73,7 +85,6 @@ function Page() {
               </div>
             </HasPermission>
 
-           
             <HasPermission permissionName={"articles-browse"}>
               <div className="col-md-6 col-lg-4">
                 <CardModule
@@ -86,7 +97,6 @@ function Page() {
               </div>
             </HasPermission>
 
-
             <HasPermission permissionName={"iers-browse"}>
               <div className="col-md-6 col-lg-4">
                 <CardModule
@@ -98,8 +108,6 @@ function Page() {
                 />
               </div>
             </HasPermission>
-
-          
           </div>
         </div>
       </div>

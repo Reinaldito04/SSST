@@ -2,13 +2,12 @@ import clsx from 'clsx';
 import React from 'react';
 import styles from '../styles/InputField.module.css';
 
-function InputField({ label, type, placeholder, options, value, onChange,requiredColor = 'red' }) {
+function InputField({ label, type, placeholder, options, value, onChange,requiredColor = 'red' , required=true }) {
   return (
     <div className="mb-3">
       <label className={clsx(styles.formLabel, "form-label")}>
         {label}
-        
-          <span style={{ color: requiredColor }}> (*)</span> 
+          {required && <span style={{ color: requiredColor }}> (*)</span>}
         
       </label>
       {type === 'select' ? (

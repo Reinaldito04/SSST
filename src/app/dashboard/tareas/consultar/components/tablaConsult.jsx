@@ -249,13 +249,12 @@ function Tabla() {
           <input
             type="text"
             placeholder="Buscar tarea por título, sector o estado..."
-            className={`form-control ${styles.searchInput}`}
+            className="form-control"
             value={searchTerm}
             onChange={(e) => {
               setSearchTerm(e.target.value);
               setCurrentPage(1);
             }}
-            style={{ maxWidth: "400px" }}
           />
 
           <button
@@ -572,7 +571,7 @@ function Tabla() {
       </div>
 
       <ViewParticipantes
-        tasks={selectedTask?.participants}
+        tasks={selectedTask}
         open={isModalView}
         close={() => setIsModalView(false)}
       />
