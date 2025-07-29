@@ -453,6 +453,7 @@ function Tabla() {
               <th>Creado por</th>
               <th>Participantes</th>
               <th>Fecha Creación</th>
+              <th>Fecha Limite</th>
               <th>Acciones</th>
             </tr>
           </thead>
@@ -479,6 +480,9 @@ function Tabla() {
                     </span>
                   </td>
                   <td>{formatDate(task.created_at)}</td>
+
+                  <td>{formatDate(task.deadline_at)}</td>
+
                   <td style={{ minWidth: "120px" }}>
                     <div className="d-flex gap-2">
                       <HasPermission permissionName="tasks-edit">
