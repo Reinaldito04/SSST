@@ -21,6 +21,7 @@ function Form() {
     description: "",
     sector_id: "",
     article_id: "",
+    deadline:""
   });
 
   useEffect(() => {
@@ -109,6 +110,7 @@ function Form() {
         description: data.description,
         article_id: data.article_id,
         sector_id: data.sector_id,
+        deadline_at: data.deadline
       });
 
       // Limpiar formulario después del éxito
@@ -117,6 +119,7 @@ function Form() {
         description: "",
         sector_id: "",
         article_id: "",
+        deadline:""
       });
 
       MySwal.fire({
@@ -180,6 +183,16 @@ function Form() {
             onChange={(e) => setData({ ...data, description: e.target.value })}
           />
         </div>
+        <div className="col-md-6">
+          <InputField
+          required = {false}
+            label="Fecha limite (opcional)"
+            type="date"
+            placeholder="Ej: Departamento encargado de la tecnología..."
+            value={data.deadline}
+            onChange={(e) => setData({ ...data, deadline: e.target.value })}
+          />
+        </div>
       </div>
       <div style={{ marginTop: "20px" }}>
         <CustomButton
@@ -198,6 +211,7 @@ function Form() {
               description: "",
               sector_id: "",
               article_id: "",
+              deadline:""
             });
           }}
           style={{ marginLeft: "15px" }}

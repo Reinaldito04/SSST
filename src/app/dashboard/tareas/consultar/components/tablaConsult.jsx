@@ -574,6 +574,7 @@ function Tabla() {
         tasks={selectedTask}
         open={isModalView}
         close={() => setIsModalView(false)}
+        refetch={fetchData}
       />
 
       <EditDepartmentModal
