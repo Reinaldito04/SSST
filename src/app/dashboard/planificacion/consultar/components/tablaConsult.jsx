@@ -7,17 +7,24 @@ import { axioInstance } from "../../../../utils/axioInstance";
 import { useRouter } from "next/navigation";
 import Loading from "../../../../components/Loading";
 import Swal from "sweetalert2";
+import HasPermission from "../../../../components/HasPermission";
 import {
   FaRegEdit,
   FaRegTrashAlt,
   FaFilter,
   FaTimes,
   FaFilePdf,
-  FaEye
+  FaEye,
 } from "react-icons/fa";
 import "react-datepicker/dist/react-datepicker.css";
-import { FiCalendar, FiClock, FiRepeat, FiCheckCircle, FiXCircle } from "react-icons/fi";
-
+import {
+  FiCalendar,
+  FiClock,
+  FiRepeat,
+  FiCheckCircle,
+  FiXCircle,
+} from "react-icons/fi";
+import ViewParticipantes from "./ViewParticipantes";
 function Tabla() {
   const router = useRouter();
   const [currentPage, setCurrentPage] = useState(1);
@@ -28,6 +35,8 @@ function Tabla() {
   const [selectedPlan, setSelectedPlan] = useState(null);
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
+  const [isModalView, setIsModalView] = useState(false);
+
   const [filters, setFilters] = useState({
     status: "",
     start_at_start: null,
@@ -49,7 +58,12 @@ function Tabla() {
       let params = {
         page: currentPage,
         search_input: searchTerm,
-        is_active: filters.status === "active" ? 1 : filters.status === "inactive" ? 0 : "",
+        is_active:
+          filters.status === "active"
+            ? 1
+            : filters.status === "inactive"
+            ? 0
+            : "",
       };
 
       // Filtros de fecha
@@ -138,21 +152,24 @@ function Tabla() {
   const formatDays = (frequency, days) => {
     if (frequency === "daily") return "Diario";
     if (frequency === "yearly") return "Anual";
-    
+
     const dayLabels = {
-      weekly: ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'],
+      weekly: ["Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"],
       monthly: {
-        'last': 'Último',
-        'last-1': 'Penúltimo',
-        'last-2': 'Antepenúltimo'
-      }
+        last: "Último",
+        "last-1": "Penúltimo",
+        "last-2": "Antepenúltimo",
+      },
     };
-    
-    return days.map(day => {
-      if (frequency === "weekly") return dayLabels.weekly[day];
-      if (typeof day === "string" && dayLabels.monthly[day]) return dayLabels.monthly[day];
-      return `Día ${day}`;
-    }).join(", ");
+
+    return days
+      .map((day) => {
+        if (frequency === "weekly") return dayLabels.weekly[day];
+        if (typeof day === "string" && dayLabels.monthly[day])
+          return dayLabels.monthly[day];
+        return `Día ${day}`;
+      })
+      .join(", ");
   };
 
   const resetFilters = () => {
@@ -174,6 +191,33 @@ function Tabla() {
       filters.end_at_start ||
       filters.end_at_end
     );
+  };
+
+  const showParticipantes = (task) => {
+    setSelectedPlan(task);
+    setIsModalView(true);
+  };
+
+  const EjecutarPlans = async () => {
+    await axioInstance
+      .post(`/task-plans/check`)
+      .then((response) => {
+        Swal.fire(
+          "Planificaciones Ejecutadas",
+          response.data.message||"Las planificaciones se han ejecutado correctamente",
+          "success"
+        ).finally(() => {
+          fetchData();
+        });
+      })
+      .catch((error) => {
+        Swal.fire(
+          "Error",
+          error.response.data.message ||
+            "No se pudo ejecutar las planificaciones",
+          "error"
+        );
+      });
   };
 
   if (loading) return <Loading />;
@@ -210,10 +254,18 @@ function Tabla() {
             </button>
           )}
         </div>
-
-        <CustomButton
+          <HasPermission permissionName={"task_plans-create"}>
+<CustomButton
           label="Crear Planificación"
           onClick={() => router.push("/dashboard/planificacion/crear")}
+        />
+          </HasPermission>
+
+        
+        <CustomButton
+        className="btn btn-secondary"
+          label="Ejecutar Planificaciones"
+          onClick={EjecutarPlans}
         />
       </div>
 
@@ -242,9 +294,16 @@ function Tabla() {
                 <input
                   type="date"
                   className="form-control"
-                  value={filters.start_at_start?.toISOString().split('T')[0] || ''}
+                  value={
+                    filters.start_at_start?.toISOString().split("T")[0] || ""
+                  }
                   onChange={(e) =>
-                    setFilters({ ...filters, start_at_start: e.target.value ? new Date(e.target.value) : null })
+                    setFilters({
+                      ...filters,
+                      start_at_start: e.target.value
+                        ? new Date(e.target.value)
+                        : null,
+                    })
                   }
                 />
               </div>
@@ -254,9 +313,16 @@ function Tabla() {
                 <input
                   type="date"
                   className="form-control"
-                  value={filters.start_at_end?.toISOString().split('T')[0] || ''}
+                  value={
+                    filters.start_at_end?.toISOString().split("T")[0] || ""
+                  }
                   onChange={(e) =>
-                    setFilters({ ...filters, start_at_end: e.target.value ? new Date(e.target.value) : null })
+                    setFilters({
+                      ...filters,
+                      start_at_end: e.target.value
+                        ? new Date(e.target.value)
+                        : null,
+                    })
                   }
                 />
               </div>
@@ -266,9 +332,16 @@ function Tabla() {
                 <input
                   type="date"
                   className="form-control"
-                  value={filters.end_at_start?.toISOString().split('T')[0] || ''}
+                  value={
+                    filters.end_at_start?.toISOString().split("T")[0] || ""
+                  }
                   onChange={(e) =>
-                    setFilters({ ...filters, end_at_start: e.target.value ? new Date(e.target.value) : null })
+                    setFilters({
+                      ...filters,
+                      end_at_start: e.target.value
+                        ? new Date(e.target.value)
+                        : null,
+                    })
                   }
                 />
               </div>
@@ -278,9 +351,14 @@ function Tabla() {
                 <input
                   type="date"
                   className="form-control"
-                  value={filters.end_at_end?.toISOString().split('T')[0] || ''}
+                  value={filters.end_at_end?.toISOString().split("T")[0] || ""}
                   onChange={(e) =>
-                    setFilters({ ...filters, end_at_end: e.target.value ? new Date(e.target.value) : null })
+                    setFilters({
+                      ...filters,
+                      end_at_end: e.target.value
+                        ? new Date(e.target.value)
+                        : null,
+                    })
                   }
                 />
               </div>
@@ -297,8 +375,10 @@ function Tabla() {
               <th>Título</th>
               <th>Sector</th>
               <th>Frecuencia</th>
+              <th>Participantes</th>
               <th>Días</th>
               <th>Hora Límite</th>
+
               <th>Fecha Inicio</th>
               <th>Fecha Fin</th>
               <th>Estado</th>
@@ -311,10 +391,19 @@ function Tabla() {
                 <tr key={plan.id}>
                   <td>{plan.id}</td>
                   <td>{plan.title}</td>
-                  <td>{plan.sector_display_name	 || 'N/A'}</td>
+                  <td>{plan.sector_display_name || "N/A"}</td>
                   <td>
                     <span className="badge bg-info text-capitalize">
                       {plan.frequency}
+                    </span>
+                  </td>
+                  <td>
+                    <span
+                      className="badge bg-primary"
+                      onClick={() => showParticipantes(plan)}
+                      style={{ cursor: "pointer" }}
+                    >
+                      {plan.participants.length}
                     </span>
                   </td>
                   <td>
@@ -327,7 +416,9 @@ function Tabla() {
                     </div>
                   </td>
                   <td>{formatDate(plan.start_at)}</td>
-                  <td>{plan.end_at ? formatDate(plan.end_at) : 'Indefinido'}</td>
+                  <td>
+                    {plan.end_at ? formatDate(plan.end_at) : "Indefinido"}
+                  </td>
                   <td>
                     {plan.is_active ? (
                       <span className="badge bg-success d-flex align-items-center gap-1">
@@ -341,29 +432,29 @@ function Tabla() {
                   </td>
                   <td>
                     <div className="d-flex gap-2">
-                      <button
-                        onClick={() => handleViewDetails(plan)}
-                        className="btn btn-sm btn-primary"
-                        title="Ver detalles"
-                      >
-                        <FaEye />
-                      </button>
+                   
 
-                      <button
-                        onClick={() => router.push(`/dashboard/planificacion/editar/${plan.id}`)}
+                      {/* <button
+                        onClick={() =>
+                          router.push(
+                            `/dashboard/planificacion/editar/${plan.id}`
+                          )
+                        }
                         className="btn btn-sm btn-warning"
                         title="Editar"
                       >
                         <FaRegEdit />
-                      </button>
-
-                      <button
+                      </button> */}
+                        <HasPermission permissionName={"task_plans-delete"}>
+   <button
                         onClick={() => handleDelete(plan.id)}
                         className="btn btn-sm btn-danger"
                         title="Eliminar"
                       >
                         <FaRegTrashAlt />
                       </button>
+                        </HasPermission>
+                   
                     </div>
                   </td>
                 </tr>
@@ -391,42 +482,54 @@ function Tabla() {
 
         <nav>
           <ul className="pagination">
-            <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
-              <button 
-                className="page-link" 
+            <li className={`page-item ${currentPage === 1 ? "disabled" : ""}`}>
+              <button
+                className="page-link"
                 onClick={() => setCurrentPage(currentPage - 1)}
               >
                 Anterior
               </button>
             </li>
-            
-            {Array.from({ length: Math.min(5, pagination.last_page) }, (_, i) => {
-              let pageNum;
-              if (pagination.last_page <= 5) {
-                pageNum = i + 1;
-              } else if (currentPage <= 3) {
-                pageNum = i + 1;
-              } else if (currentPage >= pagination.last_page - 2) {
-                pageNum = pagination.last_page - 4 + i;
-              } else {
-                pageNum = currentPage - 2 + i;
-              }
-              
-              return (
-                <li key={pageNum} className={`page-item ${currentPage === pageNum ? 'active' : ''}`}>
-                  <button 
-                    className="page-link" 
-                    onClick={() => setCurrentPage(pageNum)}
+
+            {Array.from(
+              { length: Math.min(5, pagination.last_page) },
+              (_, i) => {
+                let pageNum;
+                if (pagination.last_page <= 5) {
+                  pageNum = i + 1;
+                } else if (currentPage <= 3) {
+                  pageNum = i + 1;
+                } else if (currentPage >= pagination.last_page - 2) {
+                  pageNum = pagination.last_page - 4 + i;
+                } else {
+                  pageNum = currentPage - 2 + i;
+                }
+
+                return (
+                  <li
+                    key={pageNum}
+                    className={`page-item ${
+                      currentPage === pageNum ? "active" : ""
+                    }`}
                   >
-                    {pageNum}
-                  </button>
-                </li>
-              );
-            })}
-            
-            <li className={`page-item ${currentPage === pagination.last_page ? 'disabled' : ''}`}>
-              <button 
-                className="page-link" 
+                    <button
+                      className="page-link"
+                      onClick={() => setCurrentPage(pageNum)}
+                    >
+                      {pageNum}
+                    </button>
+                  </li>
+                );
+              }
+            )}
+
+            <li
+              className={`page-item ${
+                currentPage === pagination.last_page ? "disabled" : ""
+              }`}
+            >
+              <button
+                className="page-link"
                 onClick={() => setCurrentPage(currentPage + 1)}
               >
                 Siguiente
@@ -435,8 +538,12 @@ function Tabla() {
           </ul>
         </nav>
       </div>
-
-     
+      <ViewParticipantes
+        tasks={selectedPlan}
+        open={isModalView}
+        close={() => setIsModalView(false)}
+        refetch={fetchData}
+      />
     </div>
   );
 }

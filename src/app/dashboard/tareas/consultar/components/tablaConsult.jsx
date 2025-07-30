@@ -16,15 +16,15 @@ import {
   FaFilter,
   FaTimes,
   FaComment,
-  FaFilePdf
+  FaFilePdf,
 } from "react-icons/fa";
 import StatusSelector from "./StatusSelector";
 import DatePicker from "react-datepicker";
 import CommentsModal from "./CommentsSection";
-import  ModalTasksFiles from './ModalTasksFiles';
+import ModalTasksFiles from "./ModalTasksFiles";
 import "react-datepicker/dist/react-datepicker.css";
-
-
+import * as XLSX from "xlsx";
+import { saveAs } from "file-saver";
 function Tabla() {
   const router = useRouter();
   const [currentPage, setCurrentPage] = useState(1);
@@ -146,17 +146,51 @@ function Tabla() {
     setIsModalView(true);
   };
 
-  const showFiles=(task)=> {
+  const showFiles = (task) => {
     setSelectedTask(task);
     setIsModalFiles(true);
-  }
-
+  };
 
   const handleComments = (task) => {
     setSelectedTask(task);
     setIsModalComments(true);
   };
+const handleExportExcel = () => {
+  if (!data || data.length === 0) {
+    Swal.fire("Sin datos", "No hay tareas para exportar", "warning");
+    return;
+  }
 
+  const exportData = data.map((task) => ({
+    ID: task.id,
+    Título: task.title,
+    Descripción: task.description,
+    Sector: task.sector_display_name,
+    Planta: task.plant_display_name,
+    Área: task.area_display_name,
+    IER: task.ier_display_name,
+    Estado: task.status,
+    "Creado por": task.creator_name,
+    Participantes: task.participants.length,
+    "Fecha de creación": formatDate(task.created_at),
+    "Fecha límite": formatDate(task.deadline_at),
+  }));
+
+  const worksheet = XLSX.utils.json_to_sheet(exportData);
+  const workbook = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbook, worksheet, "Tareas");
+
+  const excelBuffer = XLSX.write(workbook, {
+    bookType: "xlsx",
+    type: "array",
+  });
+
+  const blob = new Blob([excelBuffer], {
+    type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+  });
+
+  saveAs(blob, `tareas_export_${new Date().toISOString().split("T")[0]}.xlsx`);
+};
   const handleDelete = (taskId) => {
     Swal.fire({
       title: "¿Estás seguro?",
@@ -278,6 +312,12 @@ function Tabla() {
           label="Crear tarea"
           onClick={() => router.push("/dashboard/tareas/crear")}
         />
+        <CustomButton
+          className="btn btn-success d-flex align-items-center gap-1"
+          onClick={handleExportExcel}
+          label={'Exportar Excel'}
+        >
+        </CustomButton>
       </div>
 
       {showFilters && (
@@ -594,12 +634,11 @@ function Tabla() {
         onClose={() => setIsModalComments(false)}
       />
 
-          <ModalTasksFiles
+      <ModalTasksFiles
         task={selectedTask}
         isOpen={isModalFiles}
         onClose={() => setIsModalFiles(false)}
       />
-
     </div>
   );
 }

@@ -8,7 +8,7 @@ import Form from "./components/Form";
 function Page() {
   const breadcrumbs = [
     { label: "Inicio", link: "/dashboard" },
-    { label: "Tareas", link: "/dashboard/tareas" },
+    { label: "Tareas", link: "/dashboard/tareas/consultar" },
     { label: "Registrar nueva tarea", link: "" },
   ];
 

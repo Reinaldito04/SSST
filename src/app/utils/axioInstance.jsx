@@ -2,7 +2,7 @@
 
 import axios from "axios";
 import Swal from 'sweetalert2'; // Asegúrate de tener sweetalert2 instalado
-
+import { useRouter } from 'next/navigation';
 // Crear instancia base sin el token
 export const axioInstance = axios.create({
   baseURL: 'http://localhost:8000/api',
@@ -38,7 +38,8 @@ axioInstance.interceptors.response.use(
           text: 'No tienes permisos para realizar esta acción.',
           
         }).then(() => {
-          window.location.href = '/dashboard';
+          const router = useRouter();
+          router.push('/dashboard');
         });
       }
     }

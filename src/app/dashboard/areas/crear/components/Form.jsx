@@ -52,7 +52,7 @@ function Form() {
       });
 
       MySwal.fire({
-        title: "area creada con éxito",
+        title: "Area creada con éxito",
         icon: "success",
         confirmButtonText: "OK",
       });

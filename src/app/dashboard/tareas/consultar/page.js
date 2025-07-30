@@ -13,7 +13,7 @@ function page() {
     },
     {
       label: "Tareas",
-      link: "/dashboard/Tareas",
+      link: "/dashboard/tareas/consultar",
     },
     {
       label: "Consultar Tareas",

@@ -6,9 +6,11 @@ import pdvsa from "../assets/pdvsa.png";
 import Image from "next/image";
 import { IoIosArrowDown } from "react-icons/io";
 import Link from "next/link";
+import { useRouter } from 'next/navigation';
 function Header({ toggleSidebar }) {
   const [username, setUsername] = useState("Usuario");
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const router = useRouter();
 
   // Usamos useEffect para asegurarnos de que el código solo se ejecute en el cliente
   useEffect(() => {
@@ -22,7 +24,7 @@ function Header({ toggleSidebar }) {
   const closeSesion = () => {
     localStorage.removeItem("username");
     localStorage.removeItem("typeUser");
-    window.location.href = "/";
+    router.push("/");
   };
 
   const toggleMenu = () => {
