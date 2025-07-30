@@ -254,7 +254,7 @@ function Tabla() {
             </button>
           )}
         </div>
-          <HasPermission permissionName={"task_plans-create"}>
+          <HasPermission permissionName={"task_plans-browse"}>
 <CustomButton
           label="Crear Planificación"
           onClick={() => router.push("/dashboard/planificacion/crear")}

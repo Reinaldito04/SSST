@@ -19,11 +19,13 @@ function page() {
   ];
 
   // Función para manejar la descarga (simulada)
-  const handleDownload = (type) => {
-    // Aquí iría la lógica real para descargar cada tipo de archivo
-    window.location.href = `/${type}`;
-    // Ejemplo: window.location.href = `/api/download/${type}`;
-  };
+ const handleDownload = (type) => {
+  const link = document.createElement('a');
+  link.href = `/${type}`;
+  link.target = '_blank';
+  link.rel = 'noopener noreferrer';
+  link.click();
+};
 
  const getSQL = async () => {
   try {

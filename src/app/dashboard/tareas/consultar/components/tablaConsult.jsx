@@ -570,6 +570,7 @@ const handleExportExcel = () => {
                               t.id === taskId ? { ...t, status: newStatus } : t
                             )
                           );
+                          fetchData();
                         }}
                       />
                     </div>

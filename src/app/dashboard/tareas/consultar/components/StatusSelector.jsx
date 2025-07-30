@@ -91,11 +91,9 @@ const StatusSelector = ({ task, onStatusChange }) => {
     const baseOptions = [];
 
     // Opción Ejecutar (solo para no supervisores)
-    if (!HasPermission({ permissionName: "tasks-supervise", children: true })) {
       if (task.status === "En proceso") {
         baseOptions.push(statusOptions.find(opt => opt.value === "execute"));
       }
-    }
 
     // Opción En proceso (solo para no supervisores)
     // if (!HasPermission({ permissionName: "tasks-supervise", children: true })) {
